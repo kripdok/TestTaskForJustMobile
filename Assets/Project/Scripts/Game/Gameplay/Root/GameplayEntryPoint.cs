@@ -1,4 +1,12 @@
-﻿using R3;
+﻿using Project.Scripts.Game.Common;
+using Project.Scripts.Game.Gameplay.Root.View;
+using Project.Scripts.Game.Gameplay.View.UI;
+using Project.Scripts.Game.GameRoot;
+using Project.Scripts.Game.MainMenu.Root;
+using Project.Scripts.MVVM.UI;
+using R3;
+using System.Collections;
+using System.ComponentModel;
 using UnityEngine;
 using Zenject;
 
@@ -6,9 +14,45 @@ namespace Project.Scripts.Game.Gameplay.Root
 {
     public class GameplayEntryPoint : MonoBehaviour
     {
-        //public Observable<GameplayExitParams> Run(DiContainer diContainer, GameplayEnterParams enterParams)
-        //{
-        //    var gameplayRegistration = new GameplayRegistrations(diContainer, enterParams);
-        //}
+        [SerializeField] private SceneContext sceneContext;
+        [SerializeField] private UIGameplayRootBinder _sceneUIRootPrefab;
+
+        private GameplayRegistrations _registrations;
+        private GameplayViewModelsRegistrations _viewModelRegistrations;
+
+        public Observable<GameplayExitParams> Run(GameplayEnterParams enterParams)
+        {
+            var container = sceneContext.Container;
+            _registrations = new GameplayRegistrations(container, enterParams);
+            _viewModelRegistrations = new GameplayViewModelsRegistrations(container);
+
+            InitUI(container);
+
+            var mainMenuEnterParams = new MainMenuEnterParams();
+            var exitParams = new GameplayExitParams(mainMenuEnterParams);
+            var exitSceneRequest = container.ResolveId<Subject<Unit>>(AppConstants.ENIT_SCENE_REQUEST_TAG);
+            var exitToMainMenuSceneSignal = exitSceneRequest.Select(_ => exitParams);
+            Debug.Log($"GAMEPLAY ENTER PARAMS: Run gameplay scene.");
+
+            return exitToMainMenuSceneSignal;
+        }
+
+        private void InitWorld()
+        {
+
+        }
+
+        private void InitUI(DiContainer container)
+        {
+            var uiRoot = container.Resolve<UIRootView>();
+            var uiSceneRootBinder = Instantiate(_sceneUIRootPrefab);
+            uiRoot.AttachSceneUI(uiSceneRootBinder.gameObject);
+
+            var uiSceneRootViewModel = container.Resolve<UIGameplayRootViewModel>();
+            uiSceneRootBinder.Bind(uiSceneRootViewModel);
+
+            var uiManager = container.Resolve<GameplayUIManager>();
+            uiManager.OpenScreenGameplay();
+        }
     }
 }

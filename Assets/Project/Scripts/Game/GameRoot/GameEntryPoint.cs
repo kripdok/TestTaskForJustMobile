@@ -1,8 +1,10 @@
+using Project.Scripts.Game.Gameplay.Root;
+using Project.Scripts.Game.MainMenu.Root;
 using Project.Scripts.Game.Settings;
+using Project.Scripts.Game.State;
 using Project.Scripts.Utils;
+using R3;
 using System.Collections;
-using System.ComponentModel;
-using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
@@ -12,10 +14,11 @@ namespace Project.Scripts.Game.GameRoot
     public class GameEntryPoint
     {
         private static GameEntryPoint _instance;
+        private readonly DiContainer _rootContainer;
+
         private Coroutines _coroutines;
         private ProjectContext _projectContext;
-
-        public static DiContainer  Container;
+        private UIRootView _uiRoot;
 
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -32,27 +35,98 @@ namespace Project.Scripts.Game.GameRoot
         {
             _coroutines = new GameObject(name: "[COROUTINES]").AddComponent<Coroutines>();
             Object.DontDestroyOnLoad(_coroutines.gameObject);
-            Container = new DiContainer();
 
-            Container.Bind<ISettingsProvider>().To<LocalSettingsProvider>().AsSingle().NonLazy();
+            var prefabUIRoot = Resources.Load<UIRootView>("UIRoot");
+            _uiRoot = Object.Instantiate(prefabUIRoot, null);
+            Object.DontDestroyOnLoad(_uiRoot.gameObject);
+
+            _projectContext = ProjectContext.Instance;
+            _rootContainer = _projectContext.Container;
+
+
+            //TODO - Ќадо разобратьс€ по поводу различи€ разного биндинга и их настроек
+            _rootContainer.Bind<ISettingsProvider>().To<LocalSettingsProvider>().AsSingle().NonLazy();
+            _rootContainer.Bind<IGameStateProvider>().To<PlayerPrefsGameStateProvider>().AsSingle().NonLazy();
+            _rootContainer.Bind<UIRootView>().FromInstance(_uiRoot).AsSingle();
 
             RunGame();
         }
 
-        
+
         private async void RunGame()
         {
-            await Container.Resolve<ISettingsProvider>().LoadGameSettings();
-            _coroutines.StartCoroutine(LoadGameplay());
-            //TODO —делать загрузку сцены с зенджектом, который осуществл€ет создание основных настроект приложени€
+            await _rootContainer.Resolve<ISettingsProvider>().LoadGameSettings();
+
+#if UNITY_EDITOR
+
+            var sceneName = SceneManager.GetActiveScene().name;
+
+            if (sceneName == Scenes.GAMEPLAY)
+            {
+                var gameplayEnterParams = new GameplayEnterParams();
+                _coroutines.StartCoroutine(LoadAndStartGameplay(gameplayEnterParams));
+                return;
+            }
+
+            if (sceneName == Scenes.MAIN_MENU)
+            {
+                _coroutines.StartCoroutine(LoadAndStarMainMenu());
+                return;
+            }
+
+            if (sceneName != Scenes.BOOT)
+            {
+                return;
+            }
+#endif
+            _coroutines.StartCoroutine(LoadAndStarMainMenu());
         }
 
 
-        private IEnumerator LoadGameplay()
+        private IEnumerator LoadAndStartGameplay(GameplayEnterParams enterParams)
         {
-            Debug.Log("StartCoroutin");
-            yield return new WaitForSeconds(3);
+            _uiRoot.ShowLoadingScreen();
+
+            yield return LoadScene(Scenes.BOOT);
+            yield return new WaitForSeconds(1);
             yield return LoadScene(Scenes.GAMEPLAY);
+
+
+            var isGameStateLoaded = false;
+            _rootContainer.Resolve<IGameStateProvider>().LoadGameState().Subscribe(_ => isGameStateLoaded = true);
+            yield return new WaitUntil(() => isGameStateLoaded);
+
+            var sceneEntryPoint = Object.FindFirstObjectByType<GameplayEntryPoint>();
+
+            sceneEntryPoint.Run(enterParams).Subscribe(gameplayExitParams =>
+            {
+                _coroutines.StartCoroutine(LoadAndStarMainMenu(gameplayExitParams.MainMenuEnterParams));
+            });
+
+            _uiRoot.HideLoadingScreen();
+        }
+
+        private IEnumerator LoadAndStarMainMenu(MainMenuEnterParams enterParams = null)
+        {
+            _uiRoot.ShowLoadingScreen();
+            yield return LoadScene(Scenes.BOOT);
+            yield return new WaitForSeconds(1);
+            yield return LoadScene(Scenes.MAIN_MENU);
+           
+
+            var sceneEntryPoint = Object.FindFirstObjectByType<MainMenuEntryPoint>();
+
+            sceneEntryPoint.Run(enterParams).Subscribe(mainMenuExitParams =>
+            {
+                var targetSceneName = mainMenuExitParams.TargetSceneEnterParams.SceneName;
+
+                if (targetSceneName == Scenes.GAMEPLAY)
+                {
+                    _coroutines.StartCoroutine(LoadAndStartGameplay(mainMenuExitParams.TargetSceneEnterParams.As<GameplayEnterParams>()));
+                }
+            });
+
+            _uiRoot.HideLoadingScreen();
         }
 
         private IEnumerator LoadScene(string sceneName)

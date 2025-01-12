@@ -14,7 +14,6 @@ namespace Project.Scripts.MVVM.UI
             _subscrtiptions.Add(viewModel.OpenedScreen.Subscribe(newScreenViewModel =>
             {
                 _container.OpenScreen(newScreenViewModel);
-                Debug.Log("Open Screen");
             }));
 
             foreach (var openedPopups in viewModel.OpenedPopups)

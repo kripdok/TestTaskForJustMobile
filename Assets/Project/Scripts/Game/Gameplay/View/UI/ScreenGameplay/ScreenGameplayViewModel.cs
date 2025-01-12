@@ -1,4 +1,7 @@
-﻿using Project.Scripts.MVVM.UI;
+﻿using ObservableCollections;
+using Project.Scripts.Game.Gameplay.Service.UI;
+using Project.Scripts.Game.Gameplay.View.UI.Brick;
+using Project.Scripts.MVVM.UI;
 using R3;
 
 namespace Project.Scripts.Game.Gameplay.View.UI.ScreenGameplay
@@ -6,29 +9,20 @@ namespace Project.Scripts.Game.Gameplay.View.UI.ScreenGameplay
     public class ScreenGameplayViewModel : WindowViewModel
     {
         private readonly GameplayUIManager _uiManager;
-        private readonly Subject<Unit> _exitSceneRequest;
+        public readonly IObservableCollection<UIBrickBinder> AllUIBricks;
 
         public override string Id => "ScreenGameplay";
 
-        public ScreenGameplayViewModel(GameplayUIManager uiManager, Subject<Unit> exitSceneRequest)
+        public ScreenGameplayViewModel(GameplayUIManager uiManager, UIBricksService uIBricksService)
         {
+            AllUIBricks = uIBricksService.AllUIBricks;
             _uiManager = uiManager;
-            _exitSceneRequest = exitSceneRequest;
         }
 
-        public void RequestOpenPopupA()
+        public void RequestOpenPopupBackMenu()
         {
-            _uiManager.OpenPupupA();
+            _uiManager.OpenPupupBackMenu();
         }
 
-        public void RequestOpenPopupB()
-        {
-            _uiManager.OpenPupupB();
-        }
-
-        public void RequestGoToMainMenu()
-        {
-            _exitSceneRequest.OnNext(Unit.Default);
-        }
     }
 }

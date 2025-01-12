@@ -1,43 +1,52 @@
-﻿using Project.Scripts.MVVM.UI;
+﻿using ObservableCollections;
+using Project.Scripts.Game.Gameplay.View.UI.Brick;
+using Project.Scripts.MVVM.UI;
 using UnityEngine;
 using UnityEngine.UI;
+using R3;
 
 namespace Project.Scripts.Game.Gameplay.View.UI.ScreenGameplay
 {
     public class ScreenGameplayBinder : WindowBinder<ScreenGameplayViewModel>
     {
-        [SerializeField] private Button _buttonPopupA;
-        [SerializeField] private Button _buttonPopupB;
-        [SerializeField] private Button _buttonGoToMenu;
+        [SerializeField] private Button _buttonBackToMenu;
+        [SerializeField] private Transform _brickContainer;
+
+        protected override void OnBind(ScreenGameplayViewModel viewModel)
+        {
+            base.OnBind(viewModel);
+            foreach(var uiBrick in viewModel.AllUIBricks)
+            {
+                SetParent(uiBrick);
+            }
+
+            viewModel.AllUIBricks.ObserveAdd().Subscribe(e => 
+            {
+                SetParent(e.Value); 
+            });
+        }
 
         private void OnEnable()
         {
-            _buttonPopupA?.onClick.AddListener(OnPopupAButtonClicked);
-            _buttonPopupB?.onClick.AddListener(OnPopupBButtonClicked);
-            _buttonGoToMenu?.onClick.AddListener(OnGoToMenuButtonClicked);
+            _buttonBackToMenu?.onClick.AddListener(OnPopupAButtonClicked);
+
         }
 
         private void OnDisable()
         {
-
-            _buttonPopupA?.onClick.RemoveListener(OnPopupAButtonClicked);
-            _buttonPopupB?.onClick.RemoveListener(OnPopupBButtonClicked);
-            _buttonGoToMenu?.onClick.RemoveListener(OnGoToMenuButtonClicked);
+            _buttonBackToMenu?.onClick.RemoveListener(OnPopupAButtonClicked);
+            
         }
 
         private void OnPopupAButtonClicked()
         {
-            ViewModel.RequestOpenPopupA();
+            ViewModel.RequestOpenPopupBackMenu();
         }
 
-        private void OnPopupBButtonClicked()
+        private void SetParent(UIBrickBinder brick)
         {
-            ViewModel.RequestOpenPopupB();
+            brick.transform.parent = _brickContainer;
         }
 
-        private void OnGoToMenuButtonClicked()
-        {
-            ViewModel.RequestGoToMainMenu();
-        }
     }
 }

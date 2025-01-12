@@ -2,7 +2,7 @@
 
 namespace Project.Scripts.Game.Gameplay.View.UI
 {
-    internal class UIGameplayRootViewModel : UIRootViewModel
+    public class UIGameplayRootViewModel : UIRootViewModel
     {
         //Делаем свои кастомные штучки для сцены, если надо
     }

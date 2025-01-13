@@ -19,7 +19,7 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
             _brickEntity = proxy;
             TypeId = proxy.TypeId;
             BrickEntityId = proxy.Id;
-
+            Color = proxy.Color;
             Position = proxy.Position;
         }
     }

@@ -1,5 +1,5 @@
 ﻿using ObservableCollections;
-using Project.Scripts.Game.Gameplay.Service.UI;
+using Project.Scripts.Game.Gameplay.Service;
 using Project.Scripts.Game.Gameplay.View.Bricks;
 using Zenject;
 

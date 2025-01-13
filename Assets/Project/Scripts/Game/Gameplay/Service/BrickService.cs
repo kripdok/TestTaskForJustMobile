@@ -1,17 +1,15 @@
 ﻿using ObservableCollections;
 using Project.Scripts.Game.Gameplay.View.Bricks;
-using Project.Scripts.Game.Settings.Gameplay.Bricks;
+using Project.Scripts.Game.State;
 using Project.Scripts.Game.State.Bricks;
 using Project.Scripts.Game.State.cmd;
+using R3;
 using System;
 using System.Collections.Generic;
-using R3;
 using UnityEngine;
 using Zenject;
-using Project.Scripts.Game.Settings;
-using Project.Scripts.Game.State;
 
-namespace Project.Scripts.Game.Gameplay.Service.UI
+namespace Project.Scripts.Game.Gameplay.Service
 {
     public class BrickService
     {
@@ -62,11 +60,13 @@ namespace Project.Scripts.Game.Gameplay.Service.UI
 
             _allBricks.Add(brickViewModel);
             _bricksMap[brickEntityProxy.Id] = brickViewModel;
+
+            Debug.Log("Создан новый блок!");
         }
 
         private void RemoveBrickViewModel(BrickEntiryProxy brickEntityProxy)
         {
-            if(_bricksMap.TryGetValue(brickEntityProxy.Id, out var vieModel))
+            if (_bricksMap.TryGetValue(brickEntityProxy.Id, out var vieModel))
             {
                 _allBricks.Remove(vieModel);
             }

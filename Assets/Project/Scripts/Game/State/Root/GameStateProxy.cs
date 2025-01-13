@@ -2,6 +2,7 @@
 using Project.Scripts.Game.State.Bricks;
 using R3;
 using System.Linq;
+using Zenject;
 
 namespace Project.Scripts.Game.State.Root
 {
@@ -30,5 +31,7 @@ namespace Project.Scripts.Game.State.Root
             });
             //TODO - Сделать инициализацию данных для игры
         }
+
+        public int CreateEntityId() => _gameState.CreateEntityId();
     }
 }

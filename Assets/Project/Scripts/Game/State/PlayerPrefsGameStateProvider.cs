@@ -69,12 +69,8 @@ namespace Project.Scripts.Game.State
             _gameStateOrigin = new GameState
             {
                 Bricks = new List<BrickEntiry>()
-                {
-                    new BrickEntiry() {Color = Color.yellow, Position = Vector3.zero }
-                }
             };
             
-
             return new GameStateProxy(_gameStateOrigin);
         }
     }

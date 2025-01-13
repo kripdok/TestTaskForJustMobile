@@ -1,6 +1,7 @@
 ﻿using ObservableCollections;
 using Project.Scripts.Game.Gameplay.View.Bricks;
 using R3;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,6 +28,16 @@ namespace Project.Scripts.Game.Gameplay.Root.View
             _disposables.Add(_viewModel.AllBuildongs.ObserveRemove().Subscribe(e => DestroyBuilding(e.Value)));
         }
 
+        public Collider2D GetBrickBinderCollider(int entityId)
+        {
+            if(_createdBuildingsMap.TryGetValue(entityId, out var Brick))
+            {
+                return Brick.Collider;
+            }
+
+            throw new ArgumentException($"brick with id {entityId} does not exist");
+        }
+
         private void OnDestroy()
         {
             _disposables.Dispose();
@@ -48,7 +59,7 @@ namespace Project.Scripts.Game.Gameplay.Root.View
         {
             if(_createdBuildingsMap.TryGetValue(buildingViewModel.BrickEntityId, out var briclBinder))
             {
-                Destroy(briclBinder);
+                Destroy(briclBinder.gameObject);
                 _createdBuildingsMap.Remove(buildingViewModel.BrickEntityId);
             }
         }

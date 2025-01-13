@@ -11,6 +11,7 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
         public readonly int BrickEntityId;
         public readonly string TypeId;
         public readonly Color Color;
+        public readonly Subject<int> OnStartHold = new();
 
         public ReadOnlyReactiveProperty<Vector3> Position { get; }
 
@@ -21,6 +22,11 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
             BrickEntityId = proxy.Id;
             Color = proxy.Color;
             Position = proxy.Position;
+        }
+
+        public void RequestStartHold()
+        {
+            OnStartHold.OnNext(BrickEntityId);
         }
     }
 }

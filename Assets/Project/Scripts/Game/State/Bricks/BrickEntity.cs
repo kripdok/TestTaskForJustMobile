@@ -9,7 +9,6 @@ namespace Project.Scripts.Game.State.Bricks
     {
         public string TypeID;
         public Vector3 Position;
-        public int Level;
         public Color Color;
     }
 }

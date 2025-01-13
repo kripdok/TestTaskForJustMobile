@@ -13,6 +13,8 @@ namespace Project.Scripts.Game.Gameplay.Root.View
         public WorldGameplayRootViewModel(BrickService brickService)
         {
             AllBuildongs = brickService.AllBricks;
+
+            //TODO - А зачем он нужен?
         }
     }
 }

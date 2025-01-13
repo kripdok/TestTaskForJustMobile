@@ -21,7 +21,7 @@ namespace Project.Scripts.Game.Gameplay.Root
         public Observable<GameplayExitParams> Run(GameplayEnterParams enterParams)
         {
             var container = sceneContext.Container;
-            _registrations = new GameplayRegistrations(container, enterParams);
+            _registrations = new GameplayRegistrations(container, enterParams, _worldGameplayRoot);
             _viewModelRegistrations = new GameplayViewModelsRegistrations(container);
 
             InitUI(container);

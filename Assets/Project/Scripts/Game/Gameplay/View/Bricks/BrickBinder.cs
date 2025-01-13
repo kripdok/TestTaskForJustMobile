@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 using R3;
+using Project.Scripts.Utils;
 
 namespace Project.Scripts.Game.Gameplay.View.Bricks
 {
-    public class BrickBinder :MonoBehaviour
+    public class BrickBinder :MonoBehaviour , IRespondOnHold
     {
         [SerializeField] private SpriteRenderer _sprite;
+        [SerializeField] private Rigidbody2D _body2D;
+        [field: SerializeField] public Collider2D Collider { get; private set; }
 
         private BrickViewModel _viewModel;
 
@@ -16,6 +19,9 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
             viewModel.Position.Subscribe(e => transform.position = e);
         }
 
-        //TODO - Добавить подписку на местоположение Вьюхи. Нужно для перемешения объекта
+        public void StartHold()
+        {
+            _viewModel.RequestStartHold();
+        }
     }
 }

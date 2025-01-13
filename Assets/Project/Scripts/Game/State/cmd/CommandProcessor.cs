@@ -9,10 +9,6 @@ namespace Project.Scripts.Game.State.cmd
     {
         private readonly Dictionary<Type, object> _handlesMap = new();
         private readonly IGameStateProvider _gameStateProvider;
-        public CommandProcessor(IGameStateProvider gameStateProvider)
-        {
-            _gameStateProvider = gameStateProvider;
-        }
 
         public async Task<bool> AsuncProcess<TCommand>(TCommand command) where TCommand : ICommand
         {
@@ -20,11 +16,6 @@ namespace Project.Scripts.Game.State.cmd
             {
                 var typeHandler = (ICommandHandler<TCommand>)handler;
                 var result = await typeHandler.Handle(command);
-
-                if (result)
-                {
-                    _gameStateProvider.SaveGameState();
-                }
 
                 return result;
             }
@@ -39,11 +30,6 @@ namespace Project.Scripts.Game.State.cmd
             {
                 var typeHandler = (ICommandHandler<TCommand>)handler;
                 var result = typeHandler.Handle(command).Result;
-
-                if (result)
-                {
-                    _gameStateProvider.SaveGameState();
-                }
 
                 return result;
             }

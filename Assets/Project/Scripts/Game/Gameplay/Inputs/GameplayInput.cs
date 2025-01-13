@@ -39,6 +39,20 @@ namespace Project.Scripts.Game.Gameplay.Inputs
         {
             _isEndPointFound = false;
             _coroutines.StartCoroutine(MoveMerker());
+            TryGeTRespondOnHoldObject();
+        }
+
+        private void TryGeTRespondOnHoldObject()
+        {
+            var hit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition));
+
+            if (hit.collider == null)
+                return;
+
+            if (hit.collider.TryGetComponent(out IRespondOnHold component))
+            {
+                component.StartHold();
+            }
         }
 
         private void OnClickCamceled()
@@ -53,7 +67,6 @@ namespace Project.Scripts.Game.Gameplay.Inputs
                 var position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 position.z = 0;
                 _position.Value = position;
-                Debug.Log(position);
                 yield return null;
             }
             while (!_isEndPointFound);

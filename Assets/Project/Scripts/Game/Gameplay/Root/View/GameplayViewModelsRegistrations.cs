@@ -15,7 +15,8 @@ namespace Project.Scripts.Game.Gameplay.Root.View
         {
             diContainer.Bind<GameplayUIManager>().AsCached();
             diContainer.Bind<UIGameplayRootViewModel>().AsCached();
-            diContainer.Bind<UIBricksService>().AsCached();
+            diContainer.Bind<UIBricksService>().AsCached(); //А точно оно здесь должно находиться?
+            diContainer.Bind<WorldGameplayRootViewModel>().AsCached();    
         }
     }
 }

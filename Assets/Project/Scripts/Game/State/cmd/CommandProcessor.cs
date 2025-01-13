@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Zenject;
 
 namespace Project.Scripts.Game.State.cmd
 {
@@ -8,6 +9,7 @@ namespace Project.Scripts.Game.State.cmd
         private readonly Dictionary<Type, object> _handlesMap = new();
         private readonly IGameStateProvider _gameStateProvider;
 
+        [Inject]
         public CommandProcessor(IGameStateProvider gameStateProvider)
         {
             _gameStateProvider = gameStateProvider;

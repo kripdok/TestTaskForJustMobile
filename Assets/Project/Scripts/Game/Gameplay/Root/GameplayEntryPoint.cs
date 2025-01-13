@@ -3,10 +3,7 @@ using Project.Scripts.Game.Gameplay.Root.View;
 using Project.Scripts.Game.Gameplay.View.UI;
 using Project.Scripts.Game.GameRoot;
 using Project.Scripts.Game.MainMenu.Root;
-using Project.Scripts.MVVM.UI;
 using R3;
-using System.Collections;
-using System.ComponentModel;
 using UnityEngine;
 using Zenject;
 
@@ -16,6 +13,7 @@ namespace Project.Scripts.Game.Gameplay.Root
     {
         [SerializeField] private SceneContext sceneContext;
         [SerializeField] private UIGameplayRootBinder _sceneUIRootPrefab;
+        [SerializeField] private WorldGameplayRootBinder _worldGameplayRoot;
 
         private GameplayRegistrations _registrations;
         private GameplayViewModelsRegistrations _viewModelRegistrations;
@@ -27,6 +25,7 @@ namespace Project.Scripts.Game.Gameplay.Root
             _viewModelRegistrations = new GameplayViewModelsRegistrations(container);
 
             InitUI(container);
+            InitWorld(container);
 
             var mainMenuEnterParams = new MainMenuEnterParams();
             var exitParams = new GameplayExitParams(mainMenuEnterParams);
@@ -37,9 +36,9 @@ namespace Project.Scripts.Game.Gameplay.Root
             return exitToMainMenuSceneSignal;
         }
 
-        private void InitWorld()
+        private void InitWorld(DiContainer container)
         {
-
+            _worldGameplayRoot.Bind(container.Resolve<WorldGameplayRootViewModel>());
         }
 
         private void InitUI(DiContainer container)

@@ -1,6 +1,8 @@
-﻿using Project.Scripts.Game.State.Root;
+﻿using Project.Scripts.Game.State.Bricks;
+using Project.Scripts.Game.State.Root;
 using R3;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Project.Scripts.Game.State
@@ -64,7 +66,14 @@ namespace Project.Scripts.Game.State
         private GameStateProxy CreateGameStateFromSettings()
         {
             //Default State
-            _gameStateOrigin = new GameState();
+            _gameStateOrigin = new GameState
+            {
+                Bricks = new List<BrickEntiry>()
+                {
+                    new BrickEntiry() {Color = Color.yellow, Position = Vector3.zero }
+                }
+            };
+            
 
             return new GameStateProxy(_gameStateOrigin);
         }

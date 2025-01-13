@@ -41,7 +41,6 @@ namespace Project.Scripts.MVVM.UI
         private void OnDestroy()
         {
             _subscrtiptions.Dispose();
-            Debug.Log("Dispos");
         }
     }
 }

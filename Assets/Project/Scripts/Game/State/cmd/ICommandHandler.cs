@@ -1,8 +1,10 @@
-﻿namespace Project.Scripts.Game.State.cmd
+﻿using System.Threading.Tasks;
+
+namespace Project.Scripts.Game.State.cmd
 {
     public interface ICommandHandler<TCommand> where TCommand : ICommand
     {
-        public bool Handle(TCommand command);
+        public Task<bool> Handle(TCommand command);
     }
    
 }

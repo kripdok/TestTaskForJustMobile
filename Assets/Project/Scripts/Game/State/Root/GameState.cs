@@ -9,7 +9,7 @@ namespace Project.Scripts.Game.State.Root
     public class GameState
     {
         public int GlobalEmtityID;
-        public List<BrickEntiry> Bricks;
+        public List<BrickEntity> Bricks;
 
         public int CreateEntityId() => GlobalEmtityID++;
     }

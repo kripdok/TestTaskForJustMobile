@@ -1,4 +1,6 @@
 ﻿using ObservableCollections;
+using Project.Scripts.Game.Gameplay.Commands;
+using Project.Scripts.Game.Gameplay.Commands.Handlers;
 using Project.Scripts.Game.Gameplay.View.Bricks;
 using Project.Scripts.Game.State;
 using Project.Scripts.Game.State.Bricks;
@@ -6,6 +8,7 @@ using Project.Scripts.Game.State.cmd;
 using R3;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using Zenject;
 
@@ -27,7 +30,6 @@ namespace Project.Scripts.Game.Gameplay.Service
 
             var bricks = gameStateProvider.GameState.Bricks;
 
-
             foreach (var buildingEntity in bricks)
             {
                 CreateBrickViewModel(buildingEntity);
@@ -36,6 +38,7 @@ namespace Project.Scripts.Game.Gameplay.Service
             bricks.ObserveAdd().Subscribe(e =>
             {
                 CreateBrickViewModel(e.Value);
+                MoveBuilding(e.Value);
             });
 
             bricks.ObserveRemove().Subscribe(e =>
@@ -44,9 +47,16 @@ namespace Project.Scripts.Game.Gameplay.Service
             });
         }
 
-        public bool MoveBuilding(int buildingEntityID, Vector3 position)
+        public async void MoveBuilding(BrickEntiryProxy brickEntityProxy)
         {
-            throw new NotImplementedException();
+           
+
+            var command = new CmdBrickFollowPointer(brickEntityProxy);
+
+            await _cmd.AsuncProcess(command);
+            //TODO - сделать команду,  которая будет делать приследование блока за курсором
+            //Если все прошло успешно выполняется проверка на лазер или на нахождение в другом блоке
+            //После проверки блок либо сохраняет позицию, либо удаляется, либо падает в яму
         }
 
         public bool DeleteBuilding(int buildingEntityId)

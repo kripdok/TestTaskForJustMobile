@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Zenject;
 
 namespace Project.Scripts.Game.State.cmd
@@ -8,11 +9,28 @@ namespace Project.Scripts.Game.State.cmd
     {
         private readonly Dictionary<Type, object> _handlesMap = new();
         private readonly IGameStateProvider _gameStateProvider;
-
-        [Inject]
         public CommandProcessor(IGameStateProvider gameStateProvider)
         {
             _gameStateProvider = gameStateProvider;
+        }
+
+        public async Task<bool> AsuncProcess<TCommand>(TCommand command) where TCommand : ICommand
+        {
+            if (_handlesMap.TryGetValue(typeof(TCommand), out var handler))
+            {
+                var typeHandler = (ICommandHandler<TCommand>)handler;
+                var result = await typeHandler.Handle(command);
+
+                if (result)
+                {
+                    _gameStateProvider.SaveGameState();
+                }
+
+                return result;
+            }
+
+            return false; 
+
         }
 
         public bool Process<TCommand>(TCommand command) where TCommand : ICommand
@@ -20,7 +38,7 @@ namespace Project.Scripts.Game.State.cmd
             if (_handlesMap.TryGetValue(typeof(TCommand), out var handler))
             {
                 var typeHandler = (ICommandHandler<TCommand>)handler;
-                var result = typeHandler.Handle(command);
+                var result = typeHandler.Handle(command).Result;
 
                 if (result)
                 {
@@ -32,6 +50,8 @@ namespace Project.Scripts.Game.State.cmd
 
             return false;
         }
+
+
 
         public void RegisterHandler<TCommand>(ICommandHandler<TCommand> handler) where TCommand : ICommand
         {

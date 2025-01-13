@@ -3,6 +3,7 @@ using Project.Scripts.Game.State.Bricks;
 using Project.Scripts.Game.State.cmd;
 using Project.Scripts.Game.State.Root;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Project.Scripts.Game.Gameplay.Commands.Handlers
@@ -18,10 +19,10 @@ namespace Project.Scripts.Game.Gameplay.Commands.Handlers
             _gameSettings = gameSettings;
         }
 
-        bool ICommandHandler<CmdCreateBrickState>.Handle(CmdCreateBrickState command)
+        Task<bool> ICommandHandler<CmdCreateBrickState>.Handle(CmdCreateBrickState command)
         {
             var brickSettings = _gameSettings.bricksSettings.settings.FirstOrDefault(brick => brick.TypeId == command.TypeId);
-            var brickEntity = new BrickEntiry
+            var brickEntity = new BrickEntity
             {
                 Color = brickSettings.Color,
                 TypeID = command.TypeId,
@@ -31,7 +32,7 @@ namespace Project.Scripts.Game.Gameplay.Commands.Handlers
 
             _gameState.Bricks.Add(new BrickEntiryProxy(brickEntity));
 
-            return true;
+            return Task.FromResult(true);
         }
     }
 }

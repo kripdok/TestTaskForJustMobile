@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Project.Scripts.Game.State.Bricks
 {
     [Serializable]
-    public class BrickEntiry: Entity
+    public class BrickEntity: Entity
     {
         public string TypeID;
         public Vector3 Position;

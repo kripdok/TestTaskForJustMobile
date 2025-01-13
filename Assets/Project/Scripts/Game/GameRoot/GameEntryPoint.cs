@@ -45,6 +45,7 @@ namespace Project.Scripts.Game.GameRoot
 
 
             //TODO - Надо разобраться по поводу различия разного биндинга и их настроек
+            _rootContainer.Bind<Coroutines>().FromInstance(_coroutines).AsSingle();
             _rootContainer.Bind<ISettingsProvider>().To<LocalSettingsProvider>().AsSingle().NonLazy();
             _rootContainer.Bind<IGameStateProvider>().To<PlayerPrefsGameStateProvider>().AsSingle().NonLazy();
             _rootContainer.Bind<UIRootView>().FromInstance(_uiRoot).AsSingle();

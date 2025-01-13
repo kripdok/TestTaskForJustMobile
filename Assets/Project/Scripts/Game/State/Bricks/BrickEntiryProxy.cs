@@ -9,10 +9,10 @@ namespace Project.Scripts.Game.State.Bricks
         public string TypeId { get; }
 
         public Color Color { get; }
-        public BrickEntiry Origin { get; }
+        public BrickEntity Origin { get; }
         public ReactiveProperty<Vector3> Position { get; }
 
-        public BrickEntiryProxy(BrickEntiry brick)
+        public BrickEntiryProxy(BrickEntity brick)
         { 
             Id = brick.Id;
             TypeId = brick.TypeID;

@@ -6,7 +6,6 @@ using Project.Scripts.Game.State;
 using Project.Scripts.Game.State.Bricks;
 using Project.Scripts.Game.State.cmd;
 using R3;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -52,33 +51,10 @@ namespace Project.Scripts.Game.Gameplay.Service
 
         private async void MoveBrickAndCollisionCheck(BrickEntiryProxy brickEntityProxy)
         {
-
             await MoveBrick(brickEntityProxy);
 
-            var isColliderIntersection = _cmd.Process(
-                new CmdColliderIntersectionCheck(_worldRootBinder.GetBrickBinderCollider(brickEntityProxy.Id)));
-
-            var isBrickCollisionCheked = _cmd.Process(
-                new CmdBrickCollisionCheck(_worldRootBinder.GetBrickBinderCollider(brickEntityProxy.Id)));
-
-            if (!isColliderIntersection || !isBrickCollisionCheked)
-            {
-                if (_allBricks.Count > 1)
-                {
-                    Debug.Log("Блок уничтожен");
-                    RemoveBrickViewModel(brickEntityProxy);
-                    DeleteBuilding(brickEntityProxy.Id);
-                    return;
-                }
-               
-            }
-
-      
-            ChangeBrickPosition(brickEntityProxy);
+            TryPuttingBrickOnTopOfTheTower(brickEntityProxy);
             _gameStateProvider.SaveGameState();
-            //TODO - сделать команду,  которая будет делать приследование блока за курсором
-            //Если все прошло успешно выполняется проверка на лазер или на нахождение в другом блоке
-            //После проверки блок либо сохраняет позицию, либо удаляется, либо падает в яму
         }
 
         private async Task MoveBrick(BrickEntiryProxy brickEntityProxy)
@@ -86,12 +62,12 @@ namespace Project.Scripts.Game.Gameplay.Service
             await _cmd.AsuncProcess(new CmdBrickFollowPointer(brickEntityProxy));
         }
 
-        private bool DeleteBuilding(int brickEntityId)
+        private bool DeleteBrick(int brickEntityId)
         {
             var bricks = _gameStateProvider.GameState.Bricks;
             var brick = bricks.FirstOrDefault(b => b.Id == brickEntityId);
 
-            if(brick != null)
+            if (brick != null)
             {
                 bricks.Remove(brick);
                 return true;
@@ -113,51 +89,89 @@ namespace Project.Scripts.Game.Gameplay.Service
 
         private void RemoveBrickViewModel(BrickEntiryProxy brickEntityProxy)
         {
+            DeleteBrick(brickEntityProxy.Id);
+
             if (_bricksMap.TryGetValue(brickEntityProxy.Id, out var vieModel))
             {
                 vieModel.OnStartHold.Dispose();
                 _allBricks.Remove(vieModel);
             }
+
+            Debug.Log("Блок уничтожен");
         }
 
-        private void ChangeBrickPosition(BrickEntiryProxy brickEntityProxy)
+        private void TryPuttingBrickOnTopOfTheTower(BrickEntiryProxy brickEntityProxy)
         {
-            var sortBricks = _allBricks.OrderBy(brick => brick.Position.CurrentValue.y).ToList();
+            var isColliderIntersection = _cmd.Process(
+                new CmdColliderIntersectionCheck(_worldRootBinder.GetBrickBinderCollider(brickEntityProxy.Id)));
 
-            if(sortBricks.Count > 1)
+            var isBrickCollisionCheked = _cmd.Process(
+                new CmdBrickCollisionCheck(_worldRootBinder.GetBrickBinderCollider(brickEntityProxy.Id)));
+
+            if (!isColliderIntersection || !isBrickCollisionCheked)
             {
-                var brick = sortBricks[sortBricks.Count - 2];
-                var newPosition = new Vector3(brickEntityProxy.Position.Value.x, brick.Position.CurrentValue.y + 1, 0);
-                brickEntityProxy.Position.Value = newPosition;
+                if (_allBricks.Count > 1)
+                {
+                    RemoveBrickViewModel(brickEntityProxy);
+
+                    return;
+                }
             }
 
-            
-            //TODO - Надо узновать размер объекта;
+            var SortedBricksByHeight = _allBricks.OrderBy(brick => brick.Position.CurrentValue.y).ToList();
+
+            if (SortedBricksByHeight.Count > 1)
+            {
+                var brick = SortedBricksByHeight[SortedBricksByHeight.Count - 2];
+                _cmd.Process(new CmdPuttingBrickOnTopOfTheTower(brickEntityProxy, brick.Position.CurrentValue, brickEntityProxy.Scale));
+            }
         }
 
         private async void TryToThrowOutBrick(int brickEntityId)
         {
             var bricks = _gameStateProvider.GameState.Bricks;
-            var brickEntityProxy = bricks.FirstOrDefault(b => b.Id == brickEntityId);
 
-            var position = brickEntityProxy.Position.Value;
+            var SortedBricksByHeight = bricks.OrderBy(brick => brick.Position.CurrentValue.y).ToList();
+            var brickEntityProxy = SortedBricksByHeight.FirstOrDefault(b => b.Id == brickEntityId);
+
+            var oldPosition = brickEntityProxy.Position.Value;
 
             await MoveBrick(brickEntityProxy);
-
             var isBlackHoleCollisionCheked = _cmd.Process(
                 new CmdBlackHoleCollisionCheck(_worldRootBinder.GetBrickBinderCollider(brickEntityProxy.Id)));
 
-            if(isBlackHoleCollisionCheked)
+            if (isBlackHoleCollisionCheked)
             {
-                Debug.Log("Блок уничтожен");
+                bool isBrickJustRemoved = SortedBricksByHeight.First() == brickEntityProxy || SortedBricksByHeight.Last() == brickEntityProxy;
+
                 RemoveBrickViewModel(brickEntityProxy);
-                DeleteBuilding(brickEntityProxy.Id);
-                return;
-                //TODO - сделать сдвиг всех блоков вниз, если был удален верхний блок
+
+                if (!isBrickJustRemoved)
+                {
+                    LowerAllBrick();
+                }
+            }
+            else
+            {
+                brickEntityProxy.Position.Value = oldPosition;
             }
 
-            brickEntityProxy.Position.Value = position;
-
+            _gameStateProvider.SaveGameState();
         }
+
+        private void LowerAllBrick()
+        {
+            var bricks = _gameStateProvider.GameState.Bricks;
+            var SortedBricksByHeight = bricks.OrderBy(brick => brick.Position.CurrentValue.y).ToList();
+
+
+            for (var i = 1; i < SortedBricksByHeight.Count; i++)
+            {
+                SortedBricksByHeight[i].Position.Value = new Vector3(SortedBricksByHeight[i].Position.Value.x,
+                    SortedBricksByHeight[i - 1].Position.Value.y + SortedBricksByHeight[i - 1].Scale.y);
+
+            }
+        }
+
     }
 }

@@ -16,8 +16,22 @@ namespace Project.Scripts.Game.Gameplay.Commands.Handlers
 
         public Task<bool> Handle(CmdBrickCollisionCheck command)
         {
-            Vector2 origin = (Vector2)command.Collider.bounds.min - new Vector2(0, 0.2f); 
-            origin.x += command.Collider.bounds.size.x / 2; 
+            Vector2 origin = (Vector2)command.Collider.bounds.min - new Vector2(0, 0.2f);
+            origin.x += command.Collider.bounds.size.x;
+            Vector2 origin2 = (Vector2)command.Collider.bounds.min - new Vector2(0, 0.2f);
+
+            var isCheck = CheckColliders(origin);
+
+            if (!isCheck)
+            {
+                isCheck = CheckColliders(origin2);
+            }
+
+            return Task.FromResult(isCheck);
+        }
+
+        private bool CheckColliders( Vector2 origin)
+        {
 
             Vector2 direction = Vector2.down;
 
@@ -27,11 +41,12 @@ namespace Project.Scripts.Game.Gameplay.Commands.Handlers
             {
                 if (hit.collider.GetComponent<BrickBinder>() != null)
                 {
-                    return Task.FromResult(true); 
+                    return true;
                 }
             }
 
-            return Task.FromResult(false);
+            return false;
         }
+        
     }
 }

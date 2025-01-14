@@ -31,6 +31,7 @@ namespace Project.Scripts.Game.Gameplay.Root
             cmd.RegisterHandler(new CmdColliderIntersectionCheckHandler());
             cmd.RegisterHandler(new CmdBrickCollisionCheckHandler());
             cmd.RegisterHandler(new CmdBlackHoleCollisionCheckHandler());
+            cmd.RegisterHandler(new CmdPuttingBrickOnTopOfTheTowerHandler());
 
             diContainer.Bind<ICommandProcessor>().FromInstance(cmd).AsCached();
             diContainer.Bind<IGameplayInput>().FromInstance(gameplayInput).AsCached();

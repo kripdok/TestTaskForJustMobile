@@ -8,6 +8,7 @@ namespace Project.Scripts.Game.Settings.Gameplay.Bricks
     public class BrickInitialStateSettings
     {
         public Color Color;
+        public Vector2 Scale;
         public string TypeId => Color.ToHexString();
     }
 }

@@ -25,6 +25,7 @@ namespace Project.Scripts.Game.Gameplay.Commands.Handlers
             var brickEntity = new BrickEntity
             {
                 Color = brickSettings.Color,
+                Scale = brickSettings.Scale,
                 TypeID = command.TypeId,
                 Id = _gameState.CreateEntityId(),
                 Position = Vector3.zero

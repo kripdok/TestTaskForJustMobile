@@ -8,7 +8,8 @@ namespace Project.Scripts.Game.State.Bricks
     public class BrickEntity: Entity
     {
         public string TypeID;
-        public Vector3 Position;
         public Color Color;
+        public Vector3 Scale;
+        public Vector3 Position;
     }
 }

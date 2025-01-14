@@ -16,6 +16,7 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
         {
             _viewModel = viewModel;
             _sprite.color = viewModel.Color;
+            transform.localScale = viewModel.Scale;
             viewModel.Position.Subscribe(e => transform.position = e);
         }
 

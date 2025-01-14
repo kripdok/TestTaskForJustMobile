@@ -45,7 +45,7 @@ namespace Project.Scripts.Game.Gameplay.View.UI.ScreenGameplay
 
         private void SetParent(UIBrickBinder brick)
         {
-            brick.transform.SetParent(_brickContainer);
+            brick.SetParent(_brickContainer);
         }
 
     }

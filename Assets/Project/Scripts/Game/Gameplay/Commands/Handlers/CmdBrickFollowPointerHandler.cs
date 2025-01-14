@@ -16,17 +16,16 @@ namespace Project.Scripts.Game.Gameplay.Commands.Handlers
 
         async Task<bool> ICommandHandler<CmdBrickFollowPointer>.Handle(CmdBrickFollowPointer command)
         {
-            var subscription = _gameplayInput.Position.Subscribe(position =>
-            {
-                 command._brickEntityProxy.Position.Value = position;
-            });
-
             do
             {
+                command._brickEntityProxy.Position.Value = _gameplayInput.Position.CurrentValue;
                 await Task.Yield();
             } while (!_gameplayInput.IsEndPointFound);
 
-            subscription?.Dispose();
+            if(_gameplayInput.IsPointsToUI == true)
+            {
+                return false;
+            }
 
             return true;
         }

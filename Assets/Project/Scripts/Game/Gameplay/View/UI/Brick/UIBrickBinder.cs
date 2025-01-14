@@ -13,11 +13,18 @@ namespace Project.Scripts.Game.Gameplay.View.UI.Brick
         {
             _viewModel = viewModel;
             _image.color = viewModel.Color;
+            
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
             _viewModel.RequestOnPointDown();
+        }
+
+        public void SetParent(Transform parent)
+        {
+            transform.SetParent(parent);
+            transform.localScale = Vector3.one;
         }
     }
 }

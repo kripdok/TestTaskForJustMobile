@@ -14,6 +14,7 @@ namespace Project.Scripts.Game.Gameplay.Root
         [SerializeField] private SceneContext sceneContext;
         [SerializeField] private UIGameplayRootBinder _sceneUIRootPrefab;
         [SerializeField] private WorldGameplayRootBinder _worldGameplayRoot;
+        [SerializeField] private Camera _camera;
 
         private GameplayRegistrations _registrations;
         private GameplayViewModelsRegistrations _viewModelRegistrations;
@@ -23,6 +24,7 @@ namespace Project.Scripts.Game.Gameplay.Root
             var container = sceneContext.Container;
             _registrations = new GameplayRegistrations(container, enterParams, _worldGameplayRoot);
             _viewModelRegistrations = new GameplayViewModelsRegistrations(container);
+            container.Resolve<UIRootView>().Test(_camera);
 
             InitUI(container);
             InitWorld(container);

@@ -51,15 +51,21 @@ namespace Project.Scripts.Game.Gameplay.Service
 
         private async void MoveBrickAndCollisionCheck(BrickEntiryProxy brickEntityProxy)
         {
-            await MoveBrick(brickEntityProxy);
+            var isComplite = await MoveBrick(brickEntityProxy);
+
+            if (isComplite == false)
+            {
+                RemoveBrickViewModel(brickEntityProxy);
+                return;
+            } 
 
             TryPuttingBrickOnTopOfTheTower(brickEntityProxy);
             _gameStateProvider.SaveGameState();
         }
 
-        private async Task MoveBrick(BrickEntiryProxy brickEntityProxy)
+        private async Task<bool> MoveBrick(BrickEntiryProxy brickEntityProxy)
         {
-            await _cmd.AsuncProcess(new CmdBrickFollowPointer(brickEntityProxy));
+            return await _cmd.AsuncProcess(new CmdBrickFollowPointer(brickEntityProxy));
         }
 
         private bool DeleteBrick(int brickEntityId)
@@ -172,6 +178,5 @@ namespace Project.Scripts.Game.Gameplay.Service
 
             }
         }
-
     }
 }

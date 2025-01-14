@@ -6,6 +6,7 @@ namespace Project.Scripts.Game.GameRoot
     {
         [SerializeField] private GameObject _loadingScreen;
         [SerializeField] private Transform _uiSceneContainer;
+        [SerializeField] private Canvas _canvas;
 
         private void Awake()
         {
@@ -27,6 +28,12 @@ namespace Project.Scripts.Game.GameRoot
             ClearSceneUI();
 
             sceneUI.transform.SetParent(_uiSceneContainer, false);
+        }
+
+        public void Test(Camera camera)
+        {
+            _canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            _canvas.worldCamera = camera;
         }
 
         private void ClearSceneUI()

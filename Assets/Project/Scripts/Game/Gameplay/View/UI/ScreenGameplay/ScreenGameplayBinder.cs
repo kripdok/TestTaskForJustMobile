@@ -11,6 +11,7 @@ namespace Project.Scripts.Game.Gameplay.View.UI.ScreenGameplay
     {
         [SerializeField] private Button _buttonBackToMenu;
         [SerializeField] private Transform _brickContainer;
+        [SerializeField] private ScrollRect _scrollRect;
 
         protected override void OnBind(ScreenGameplayViewModel viewModel)
         {
@@ -24,6 +25,7 @@ namespace Project.Scripts.Game.Gameplay.View.UI.ScreenGameplay
             {
                 SetParent(e.Value); 
             });
+
         }
 
         private void OnEnable()

@@ -16,9 +16,9 @@ namespace Project.Scripts.Game.Gameplay.Inputs
         public bool IsPointsToUI => _isPointsToUI;
 
         private readonly ReactiveProperty<Vector3> _position;
+        private bool _isEndPointFound;
         private readonly InputControls _controls;
         private readonly Coroutines _coroutines;
-        private bool _isEndPointFound;
         private bool _isPointsToUI;
 
         public GameplayInput(Coroutines coroutines, InputControls controls)
@@ -30,6 +30,7 @@ namespace Project.Scripts.Game.Gameplay.Inputs
 
             _controls.GameplayMap.Click.started += cnt => OnClickStarted();
             _controls.GameplayMap.Click.canceled += cnt => OnClickCamceled();
+
         }
 
         public void DisableControls()

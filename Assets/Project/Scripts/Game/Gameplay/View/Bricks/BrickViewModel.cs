@@ -1,12 +1,14 @@
-﻿using Project.Scripts.Game.State.Bricks;
+﻿using Project.Scripts.Game.Gameplay.View.Bricks.Common;
+using Project.Scripts.Game.State.Bricks;
 using R3;
+using System;
 using UnityEngine;
 
 namespace Project.Scripts.Game.Gameplay.View.Bricks
 {
     public class BrickViewModel
     {
-        private readonly BrickEntiryProxy _brickEntity;
+        private readonly BrickEntityProxy _brickEntity;
 
         public readonly int BrickEntityId;
         public readonly string TypeId;
@@ -16,7 +18,12 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
 
         public ReadOnlyReactiveProperty<Vector3> Position { get; }
 
-        public BrickViewModel(BrickEntiryProxy proxy)
+        public bool IsAnimationPlayed { get; private set; }
+
+        public event Action<string> PlayAnimation;
+        public event Action<string,Vector3> PlayAnimationWithPosition;
+
+        public BrickViewModel(BrickEntityProxy proxy)
         {
             _brickEntity = proxy;
             TypeId = proxy.TypeId;
@@ -24,11 +31,35 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
             Color = proxy.Color;
             Position = proxy.Position;
             Scale = proxy.Scale;
+            IsAnimationPlayed = false;
         }
 
         public void RequestStartHold()
         {
             OnStartHold.OnNext(BrickEntityId);
+        }
+
+        public void PlayDeathAnimation()
+        {
+            IsAnimationPlayed = false;
+            PlayAnimation?.Invoke(BrickAnimationNameConstants.DIE);
+        }
+
+        public void PlayMoveToTopPositionAnimation(Vector3 position)
+        {
+            IsAnimationPlayed = false;
+            PlayAnimationWithPosition?.Invoke(BrickAnimationNameConstants.MOVE_TO_TOP_POSITION, position);
+        }
+
+        public void PlayAnimationOfFallingIntoBlackHole(Vector3 position)
+        {
+            IsAnimationPlayed = false;
+            PlayAnimationWithPosition?.Invoke(BrickAnimationNameConstants.FALL_INTO_A_BLACK_HOLE, position);
+        }
+
+        public void ChangeTestBool()
+        {
+            IsAnimationPlayed = true;
         }
     }
 }

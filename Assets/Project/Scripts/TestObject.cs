@@ -1,33 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
+using R3;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class TestObject : MonoBehaviour
+public class TestObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [SerializeField] Collider2D _collider;
-    public float rayLength = 5f; // ƒлина луча
-    public Color rayColor = Color.red; // ÷вет луча
+    public ScrollRect scrollRect; // —сылка на ScrollRect
+    private ReactiveProperty<bool> isPointerOverScroll = new(); // ‘лаг дл€ отслеживани€ состо€ни€ курсора
 
-    void Update()
+    private void Awake()
     {
-  
-        Vector2 origin = (Vector2)_collider.bounds.min - new Vector2(0, 0.2f); 
-        Vector2 origin2 = (Vector2)_collider.bounds.min - new Vector2(0, 0.2f);
-        origin2.x += _collider.bounds.size.x;
-  
-        Vector2 direction = Vector2.down;
+        isPointerOverScroll.Subscribe(e => HandleScroll(e));
+    }
 
-        RaycastHit2D hit = Physics2D.Raycast(origin, direction, rayLength);
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        isPointerOverScroll.Value = true; // ”станавливаем флаг, когда курсор над скроллом
+    }
 
-        if (hit.collider != null)
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        isPointerOverScroll.Value = false; // —брасываем флаг, когда курсор покидает скролл
+    }
+
+    private void HandleScroll(bool isFlag)
+    {
+
+        if (isFlag)
         {
-            Debug.DrawLine(origin, hit.point, rayColor);
-            Debug.DrawLine(origin2, hit.point, rayColor);
+            scrollRect.horizontal = true;
         }
         else
         {
-            Debug.DrawLine(origin, origin + direction * rayLength, rayColor);
-            Debug.DrawLine(origin2, origin2 + direction * rayLength, rayColor);
+            scrollRect.horizontal = false;
         }
     }
 

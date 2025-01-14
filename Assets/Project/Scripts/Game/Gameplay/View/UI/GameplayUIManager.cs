@@ -4,7 +4,6 @@ using Project.Scripts.Game.Gameplay.View.UI.PopupBackToMenu;
 using Project.Scripts.Game.Gameplay.View.UI.ScreenGameplay;
 using Project.Scripts.MVVM.UI;
 using R3;
-using System.ComponentModel;
 using Zenject;
 
 namespace Project.Scripts.Game.Gameplay.View.UI

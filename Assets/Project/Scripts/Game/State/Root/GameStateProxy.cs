@@ -9,13 +9,13 @@ namespace Project.Scripts.Game.State.Root
     public class GameStateProxy
     {
         private readonly GameState _gameState;
-        public readonly ObservableList<BrickEntiryProxy> Bricks = new();
+        public readonly ObservableList<BrickEntityProxy> Bricks = new();
 
         public GameStateProxy(GameState gameState)
         {
             _gameState = gameState;
 
-            gameState.Bricks.ForEach(brick => Bricks.Add(new BrickEntiryProxy(brick)));
+            gameState.Bricks.ForEach(brick => Bricks.Add(new BrickEntityProxy(brick)));
 
             Bricks.ObserveAdd().Subscribe(e =>
             {

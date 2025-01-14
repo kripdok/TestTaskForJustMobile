@@ -1,16 +1,16 @@
 ﻿using Project.Scripts.Game.Settings.Gameplay.Bricks;
-using UnityEngine;
 using R3;
-using Unity.VisualScripting;
+using UnityEngine;
 
 namespace Project.Scripts.Game.Gameplay.View.UI.Brick
 {
     public class UIBrickViewModel
     {
         public readonly Color Color;
-        public readonly Subject<string> OnPointDown = new ();
-        
+        public readonly Subject<string> OnPointDown = new();
+
         private readonly string _typeId;
+
 
         public UIBrickViewModel(BrickInitialStateSettings brickSettings)
         {
@@ -21,6 +21,7 @@ namespace Project.Scripts.Game.Gameplay.View.UI.Brick
         public void RequestOnPointDown()
         {
             OnPointDown.OnNext(_typeId);
+
         }
     }
 }

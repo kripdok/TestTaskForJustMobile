@@ -5,8 +5,8 @@ namespace Project.Scripts.Game.Gameplay.Commands
 {
     public class CmdBrickFollowPointer : ICommand
     {
-        public readonly BrickEntiryProxy BrickEntityProxy;
-        public CmdBrickFollowPointer(BrickEntiryProxy brickEntityProxy)
+        public readonly BrickEntityProxy BrickEntityProxy;
+        public CmdBrickFollowPointer(BrickEntityProxy brickEntityProxy)
         {
             BrickEntityProxy = brickEntityProxy;
         }

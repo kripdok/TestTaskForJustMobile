@@ -27,6 +27,10 @@ namespace Project.Scripts.Game.Gameplay.Service
         [Inject]
         public BrickService(IGameStateProvider gameStateProvider, ICommandProcessor cmd, WorldGameplayRootBinder worldRootBinder)
         {
+
+
+           // _gameStateProvider.SaveGameState(); TODO - надо придумать когда сохранять игру
+
             _cmd = cmd;
             _worldRootBinder = worldRootBinder;
             _gameStateProvider = gameStateProvider;
@@ -49,21 +53,20 @@ namespace Project.Scripts.Game.Gameplay.Service
             });
         }
 
-        private async void MoveBrickAndCollisionCheck(BrickEntiryProxy brickEntityProxy)
+        private async void MoveBrickAndCollisionCheck(BrickEntityProxy brickEntityProxy)
         {
             var isComplite = await MoveBrick(brickEntityProxy);
 
             if (isComplite == false)
             {
-                RemoveBrickViewModel(brickEntityProxy);
+                await WaitForBlockRemoveAnimation(brickEntityProxy);
                 return;
-            } 
+            }
 
             TryPuttingBrickOnTopOfTheTower(brickEntityProxy);
-            _gameStateProvider.SaveGameState();
         }
 
-        private async Task<bool> MoveBrick(BrickEntiryProxy brickEntityProxy)
+        private async Task<bool> MoveBrick(BrickEntityProxy brickEntityProxy)
         {
             return await _cmd.AsuncProcess(new CmdBrickFollowPointer(brickEntityProxy));
         }
@@ -82,7 +85,7 @@ namespace Project.Scripts.Game.Gameplay.Service
             return false;
         }
 
-        private void CreateBrickViewModel(BrickEntiryProxy brickEntityProxy)
+        private void CreateBrickViewModel(BrickEntityProxy brickEntityProxy)
         {
             var brickViewModel = new BrickViewModel(brickEntityProxy);
             brickViewModel.OnStartHold.Subscribe(TryToThrowOutBrick);
@@ -93,7 +96,7 @@ namespace Project.Scripts.Game.Gameplay.Service
         }
 
 
-        private void RemoveBrickViewModel(BrickEntiryProxy brickEntityProxy)
+        private void RemoveBrickViewModel(BrickEntityProxy brickEntityProxy)
         {
             DeleteBrick(brickEntityProxy.Id);
 
@@ -103,10 +106,11 @@ namespace Project.Scripts.Game.Gameplay.Service
                 _allBricks.Remove(vieModel);
             }
 
+            
             Debug.Log("Блок уничтожен");
         }
 
-        private void TryPuttingBrickOnTopOfTheTower(BrickEntiryProxy brickEntityProxy)
+        private async void TryPuttingBrickOnTopOfTheTower(BrickEntityProxy brickEntityProxy)
         {
             var isColliderIntersection = _cmd.Process(
                 new CmdColliderIntersectionCheck(_worldRootBinder.GetBrickBinderCollider(brickEntityProxy.Id)));
@@ -118,7 +122,7 @@ namespace Project.Scripts.Game.Gameplay.Service
             {
                 if (_allBricks.Count > 1)
                 {
-                    RemoveBrickViewModel(brickEntityProxy);
+                    await WaitForBlockRemoveAnimation(brickEntityProxy);
 
                     return;
                 }
@@ -129,8 +133,22 @@ namespace Project.Scripts.Game.Gameplay.Service
             if (SortedBricksByHeight.Count > 1)
             {
                 var brick = SortedBricksByHeight[SortedBricksByHeight.Count - 2];
-                _cmd.Process(new CmdPuttingBrickOnTopOfTheTower(brickEntityProxy, brick.Position.CurrentValue, brickEntityProxy.Scale));
+                var newPosition = GetNewPositionForBrick(brickEntityProxy, brick.Position.CurrentValue, brickEntityProxy.Scale);
+
+                var brickViewModel = _bricksMap.Values.First(brick => brick.BrickEntityId == brickEntityProxy.Id);
+                brickViewModel.PlayMoveToTopPositionAnimation(newPosition);
+
+                await WaitForTheAnimationPlay(brickViewModel);
+                brickEntityProxy.Position.Value = newPosition;
             }
+        }
+
+        private Vector3 GetNewPositionForBrick(BrickEntityProxy brickThatIsPlaced, Vector3 topBrickPosition, Vector3 topBrickScale)
+        {
+            var newXPosition = Random.Range(topBrickPosition.x - topBrickScale.x / 2, topBrickPosition.x + topBrickScale.x / 2);
+            var newYPosition = topBrickPosition.y + brickThatIsPlaced.Scale.y;
+
+            return new Vector3(newXPosition, newYPosition, 0);
         }
 
         private async void TryToThrowOutBrick(int brickEntityId)
@@ -150,11 +168,22 @@ namespace Project.Scripts.Game.Gameplay.Service
             {
                 bool isBrickJustRemoved = SortedBricksByHeight.First() == brickEntityProxy || SortedBricksByHeight.Last() == brickEntityProxy;
 
-                RemoveBrickViewModel(brickEntityProxy);
+                DropBrickIntoBlackHole(brickEntityProxy);
 
                 if (!isBrickJustRemoved)
                 {
-                    LowerAllBrick();
+
+                    List<BrickEntityProxy> LoweredBricks = new List<BrickEntityProxy>();
+
+                    foreach (var brick in SortedBricksByHeight)
+                    {
+                        if (brick.Id != brickEntityId)
+                        {
+                            LoweredBricks.Add(brick);
+                        }
+                    }
+
+                    LowerAllBrick(LoweredBricks);
                 }
             }
             else
@@ -162,12 +191,31 @@ namespace Project.Scripts.Game.Gameplay.Service
                 brickEntityProxy.Position.Value = oldPosition;
             }
 
-            _gameStateProvider.SaveGameState();
+
         }
 
-        private void LowerAllBrick()
+        private async Task WaitForBlockRemoveAnimation(BrickEntityProxy brickEntityProxy)
         {
-            var bricks = _gameStateProvider.GameState.Bricks;
+            var brickViewModel = _bricksMap.Values.First(brick => brick.BrickEntityId == brickEntityProxy.Id);
+
+            brickViewModel.PlayDeathAnimation();
+            await WaitForTheAnimationPlay(brickViewModel);
+
+            RemoveBrickViewModel(brickEntityProxy);
+        }
+
+        private async void DropBrickIntoBlackHole(BrickEntityProxy brickEntityProxy)
+        {
+            var brickViewModel = _bricksMap.Values.First(brick => brick.BrickEntityId == brickEntityProxy.Id);
+
+            brickViewModel.PlayAnimationOfFallingIntoBlackHole(new Vector3(brickViewModel.Position.CurrentValue.x, -10, 0)); //TODO - надо получать это значение?
+            await WaitForTheAnimationPlay(brickViewModel);
+
+            RemoveBrickViewModel(brickEntityProxy);
+        }
+
+        private void LowerAllBrick(List<BrickEntityProxy> bricks)
+        {
             var SortedBricksByHeight = bricks.OrderBy(brick => brick.Position.CurrentValue.y).ToList();
 
 
@@ -176,6 +224,14 @@ namespace Project.Scripts.Game.Gameplay.Service
                 SortedBricksByHeight[i].Position.Value = new Vector3(SortedBricksByHeight[i].Position.Value.x,
                     SortedBricksByHeight[i - 1].Position.Value.y + SortedBricksByHeight[i - 1].Scale.y);
 
+            }
+        }
+
+        private async Task WaitForTheAnimationPlay(BrickViewModel brickViewModel)
+        {
+            while (brickViewModel.IsAnimationPlayed == false)
+            {
+                await Task.Yield();
             }
         }
     }

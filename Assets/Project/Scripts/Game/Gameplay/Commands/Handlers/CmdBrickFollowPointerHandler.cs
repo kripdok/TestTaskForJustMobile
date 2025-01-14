@@ -1,8 +1,8 @@
-﻿using Project.Scripts.Game.Gameplay.Utils;
-using Project.Scripts.Game.Gameplay.Inputs;
+﻿using Project.Scripts.Game.Gameplay.Inputs;
+using Project.Scripts.Game.Gameplay.Utils;
 using Project.Scripts.Game.State.cmd;
 using System.Threading.Tasks;
-using Project.Scripts.Game.State.Bricks;
+using UnityEngine;
 
 namespace Project.Scripts.Game.Gameplay.Commands.Handlers
 {
@@ -11,7 +11,7 @@ namespace Project.Scripts.Game.Gameplay.Commands.Handlers
         private readonly IGameplayInput _gameplayInput;
         private readonly CameraSystem _cameraSystem;
 
-        public CmdBrickFollowPointerHandler(IGameplayInput gameplayInput,CameraSystem cameraSystem)
+        public CmdBrickFollowPointerHandler(IGameplayInput gameplayInput, CameraSystem cameraSystem)
         {
             _cameraSystem = cameraSystem;
             _gameplayInput = gameplayInput;
@@ -25,22 +25,24 @@ namespace Project.Scripts.Game.Gameplay.Commands.Handlers
                 await Task.Yield();
             } while (!_gameplayInput.IsEndPointFound);
 
-            if(_gameplayInput.IsPointsToUI == true)
-            {
-                return false;
-            }
 
-            if(command.BrickEntityProxy.Position.Value.x< _cameraSystem.transform.position.x + command.BrickEntityProxy.Scale.x/2)
-            {
-                return false;
-            }
+            bool isPointingToUI = _gameplayInput.IsPointsToUI;
+            Vector3 brickPosition = command.BrickEntityProxy.Position.Value;
+            float cameraX = _cameraSystem.transform.position.x;
+            float maxX = _cameraSystem.GetMaxXPostion();
+            float maxY = _cameraSystem.GetMaxYPosition();
+            float halfScaleX = command.BrickEntityProxy.Scale.x / 2;
 
-            if(command.BrickEntityProxy.Position.Value.y > _cameraSystem.GetMaxYPosition() )
+            if (isPointingToUI ||
+                brickPosition.x < cameraX + halfScaleX ||
+                brickPosition.y > maxY ||
+                brickPosition.x > maxX)
             {
                 return false;
             }
 
             return true;
+
         }
     }
 }

@@ -127,6 +127,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _buttonBackToMenu: {fileID: 9139755404149452606}
   _brickContainer: {fileID: 2037648729634456800}
+  _scrollRect: {fileID: 8760723130573167817}
 --- !u!1 &3965619309362194620
 GameObject:
   m_ObjectHideFlags: 0
@@ -559,6 +560,7 @@ GameObject:
   - component: {fileID: 4368083757319358470}
   - component: {fileID: 4620266919380548261}
   - component: {fileID: 8760723130573167817}
+  - component: {fileID: 4587816320101156403}
   m_Layer: 5
   m_Name: BricksContainerScrollView
   m_TagString: Untagged
@@ -608,15 +610,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 0.6483624, g: 0.8867924, b: 0.7339022, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: a342dec5d9800e1479f2c2f565edb65c, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -655,3 +657,16 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4587816320101156403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8930132569638097985}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 816679ddc4f408842b2ddf21be780df4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scrollRect: {fileID: 8760723130573167817}

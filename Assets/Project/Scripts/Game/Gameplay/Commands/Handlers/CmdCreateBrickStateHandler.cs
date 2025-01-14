@@ -31,7 +31,7 @@ namespace Project.Scripts.Game.Gameplay.Commands.Handlers
                 Position = Vector3.zero
             };
 
-            _gameState.Bricks.Add(new BrickEntiryProxy(brickEntity));
+            _gameState.Bricks.Add(new BrickEntityProxy(brickEntity));
 
             return Task.FromResult(true);
         }

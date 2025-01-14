@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Project.Scripts.Game.State.Bricks
 {
-    public class BrickEntiryProxy
+    public class BrickEntityProxy
     {
         public int Id { get; }
         public string TypeId { get; }
@@ -12,7 +12,7 @@ namespace Project.Scripts.Game.State.Bricks
         public BrickEntity Origin { get; }
         public ReactiveProperty<Vector3> Position { get; }
 
-        public BrickEntiryProxy(BrickEntity brick)
+        public BrickEntityProxy(BrickEntity brick)
         { 
             Id = brick.Id;
             TypeId = brick.TypeID;

@@ -1,4 +1,5 @@
 ﻿using ObservableCollections;
+using Project.Scripts.Game.Gameplay.Inputs;
 using Project.Scripts.Game.Gameplay.Service.UI;
 using Project.Scripts.Game.Gameplay.View.UI.Brick;
 using Project.Scripts.MVVM.UI;
@@ -10,7 +11,6 @@ namespace Project.Scripts.Game.Gameplay.View.UI.ScreenGameplay
     {
         private readonly GameplayUIManager _uiManager;
         public readonly IObservableCollection<UIBrickBinder> AllUIBricks;
-
         public override string Id => "ScreenGameplay";
 
         public ScreenGameplayViewModel(GameplayUIManager uiManager, UIBricksService uIBricksService)

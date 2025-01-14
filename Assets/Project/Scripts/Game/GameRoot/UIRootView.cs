@@ -30,7 +30,7 @@ namespace Project.Scripts.Game.GameRoot
             sceneUI.transform.SetParent(_uiSceneContainer, false);
         }
 
-        public void Test(Camera camera)
+        public void SetCamera(Camera camera)
         {
             _canvas.renderMode = RenderMode.ScreenSpaceCamera;
             _canvas.worldCamera = camera;

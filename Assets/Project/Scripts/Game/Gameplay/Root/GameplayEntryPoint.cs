@@ -1,5 +1,6 @@
 ﻿using Project.Scripts.Game.Common;
 using Project.Scripts.Game.Gameplay.Root.View;
+using Project.Scripts.Game.Gameplay.Utils;
 using Project.Scripts.Game.Gameplay.View.UI;
 using Project.Scripts.Game.GameRoot;
 using Project.Scripts.Game.MainMenu.Root;
@@ -14,7 +15,7 @@ namespace Project.Scripts.Game.Gameplay.Root
         [SerializeField] private SceneContext sceneContext;
         [SerializeField] private UIGameplayRootBinder _sceneUIRootPrefab;
         [SerializeField] private WorldGameplayRootBinder _worldGameplayRoot;
-        [SerializeField] private Camera _camera;
+        [SerializeField] private CameraSystem _cameraSystem;
 
         private GameplayRegistrations _registrations;
         private GameplayViewModelsRegistrations _viewModelRegistrations;
@@ -22,9 +23,9 @@ namespace Project.Scripts.Game.Gameplay.Root
         public Observable<GameplayExitParams> Run(GameplayEnterParams enterParams)
         {
             var container = sceneContext.Container;
-            _registrations = new GameplayRegistrations(container, enterParams, _worldGameplayRoot);
+            _registrations = new GameplayRegistrations(container, enterParams, _worldGameplayRoot,_cameraSystem);
             _viewModelRegistrations = new GameplayViewModelsRegistrations(container);
-            container.Resolve<UIRootView>().Test(_camera);
+            container.Resolve<UIRootView>().SetCamera(_cameraSystem.Camera);
 
             InitUI(container);
             InitWorld(container);

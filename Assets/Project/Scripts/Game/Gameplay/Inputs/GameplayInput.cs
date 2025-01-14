@@ -1,6 +1,5 @@
 ﻿using Project.Scripts.Utils;
 using R3;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -65,7 +64,7 @@ namespace Project.Scripts.Game.Gameplay.Inputs
 
         private void OnClickCamceled()
         {
-            _isPointsToUI = CheckIfItPointsToUI() ;
+            _isPointsToUI = CheckIfItPointsToUI();
             _isEndPointFound = true;
         }
 

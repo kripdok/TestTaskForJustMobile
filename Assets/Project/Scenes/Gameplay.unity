@@ -777,6 +777,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1928199560}
+  - component: {fileID: 1928199561}
   m_Layer: 0
   m_Name: CameraSystem
   m_TagString: Untagged
@@ -800,6 +801,19 @@ Transform:
   - {fileID: 1596864695}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1928199561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928199559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1095d3a51aef734d915d29132895590, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Camera>k__BackingField: {fileID: 1596864694}
 --- !u!1 &1944549599
 GameObject:
   m_ObjectHideFlags: 0
@@ -832,7 +846,7 @@ MonoBehaviour:
   sceneContext: {fileID: 368496631}
   _sceneUIRootPrefab: {fileID: 293588020202016731, guid: 7b7b5e86608b9cb468a5413ff1347f68, type: 3}
   _worldGameplayRoot: {fileID: 114026509}
-  _camera: {fileID: 1596864694}
+  _cameraSystem: {fileID: 1928199561}
 --- !u!4 &1944549601
 Transform:
   m_ObjectHideFlags: 0

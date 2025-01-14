@@ -4,6 +4,7 @@ using Project.Scripts.Game.Gameplay.Commands.Handlers;
 using Project.Scripts.Game.Gameplay.Inputs;
 using Project.Scripts.Game.Gameplay.Root.View;
 using Project.Scripts.Game.Gameplay.Service;
+using Project.Scripts.Game.Gameplay.Utils;
 using Project.Scripts.Game.Settings;
 using Project.Scripts.Game.State;
 using Project.Scripts.Game.State.cmd;
@@ -15,19 +16,19 @@ namespace Project.Scripts.Game.Gameplay.Root
 {
     public class GameplayRegistrations
     {
-        public GameplayRegistrations(DiContainer diContainer, GameplayEnterParams enterParams, WorldGameplayRootBinder worldRootBinder)
+        public GameplayRegistrations(DiContainer diContainer, GameplayEnterParams enterParams, WorldGameplayRootBinder worldRootBinder, CameraSystem cameraSystem)
         {
-            Register(diContainer, enterParams, worldRootBinder);
+            Register(diContainer, enterParams, worldRootBinder, cameraSystem);
         }
 
-        private void Register(DiContainer diContainer, GameplayEnterParams enterParams, WorldGameplayRootBinder worldRootBinder)
+        private void Register(DiContainer diContainer, GameplayEnterParams enterParams, WorldGameplayRootBinder worldRootBinder,CameraSystem cameraSystem)
         {
 
             var gameplayInput = new GameplayInput(diContainer.Resolve<Coroutines>(), new InputControls());
 
             var cmd = new CommandProcessor();
             cmd.RegisterHandler(new CmdCreateBrickStateHandler(diContainer.Resolve<IGameStateProvider>().GameState, diContainer.Resolve<ISettingsProvider>().GameSettings));
-            cmd.RegisterHandler(new CmdBrickFollowPointerHandler(gameplayInput));
+            cmd.RegisterHandler(new CmdBrickFollowPointerHandler(gameplayInput, cameraSystem));
             cmd.RegisterHandler(new CmdColliderIntersectionCheckHandler());
             cmd.RegisterHandler(new CmdBrickCollisionCheckHandler());
             cmd.RegisterHandler(new CmdBlackHoleCollisionCheckHandler());

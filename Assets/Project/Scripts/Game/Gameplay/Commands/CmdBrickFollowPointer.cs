@@ -5,10 +5,10 @@ namespace Project.Scripts.Game.Gameplay.Commands
 {
     public class CmdBrickFollowPointer : ICommand
     {
-        public readonly BrickEntiryProxy _brickEntityProxy;
+        public readonly BrickEntiryProxy BrickEntityProxy;
         public CmdBrickFollowPointer(BrickEntiryProxy brickEntityProxy)
         {
-            _brickEntityProxy = brickEntityProxy;
+            BrickEntityProxy = brickEntityProxy;
         }
     }
 }

@@ -14,7 +14,6 @@ namespace Project.Scripts.MVVM.UI
 
         public virtual void Close()
         {
-            //Здесь мы будем уничтожать, а потом делать анимации на закрытие
             Destroy(gameObject);
         }
 

@@ -1,4 +1,6 @@
-﻿using Zenject;
+﻿using Project.Scripts.Game.MainMenu.View;
+using Project.Scripts.Game.MainMenu.View.UI;
+using Zenject;
 
 namespace Project.Scripts.Game.MainMenu.Root.View
 {
@@ -11,8 +13,8 @@ namespace Project.Scripts.Game.MainMenu.Root.View
 
         private void Register(DiContainer diContainer)
         {
-            //diContainer.Bind<GameplayUIManager>().AsCached();
-            //diContainer.Bind<UIGameplayRootViewModel>().AsCached();
+            diContainer.Bind<MainMenuUIManager>().AsCached();
+            diContainer.Bind<UIMainMenuRootViewModel>().AsCached();
         }
     }
 }

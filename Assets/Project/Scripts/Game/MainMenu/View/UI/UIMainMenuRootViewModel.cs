@@ -2,8 +2,7 @@
 
 namespace Project.Scripts.Game.MainMenu.View.UI
 {
-    public class UIMainMenuRootBinder : UIRootBinder
+    public class UIMainMenuRootViewModel :UIRootViewModel
     {
-
     }
 }

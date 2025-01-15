@@ -81,7 +81,7 @@ namespace Project.Scripts.Game.Gameplay.Service
             return false;
         }
 
-       
+
         private void CreateBrickViewModel(BrickEntityProxy brickEntityProxy)
         {
             var brickViewModel = new BrickViewModel(brickEntityProxy);
@@ -95,14 +95,13 @@ namespace Project.Scripts.Game.Gameplay.Service
 
         private void RemoveBrickViewModel(BrickEntityProxy brickEntityProxy)
         {
-            DeleteBrick(brickEntityProxy.Id);
 
             if (_bricksMap.TryGetValue(brickEntityProxy.Id, out var vieModel))
             {
                 vieModel.OnStartHold.Dispose();
                 _allBricks.Remove(vieModel);
-                Debug.Log("Блок уничтожен");
                 _gameStateProvider.SaveGameState();
+                Debug.Log("Блок уничтожен");
             }
         }
 
@@ -136,9 +135,9 @@ namespace Project.Scripts.Game.Gameplay.Service
 
                 await WaitForTheAnimationPlay(brickViewModel);
                 brickEntityProxy.Position.Value = newPosition;
-                _gameStateProvider.SaveGameState();
             }
 
+            Debug.Log("Блок успешно установлен");
             _gameStateProvider.SaveGameState();
         }
 
@@ -191,6 +190,7 @@ namespace Project.Scripts.Game.Gameplay.Service
             }
             else
             {
+
                 brickEntityProxy.Position.Value = oldPosition;
             }
 
@@ -204,7 +204,7 @@ namespace Project.Scripts.Game.Gameplay.Service
             brickViewModel.PlayDeathAnimation();
             await WaitForTheAnimationPlay(brickViewModel);
 
-            RemoveBrickViewModel(brickEntityProxy);
+            DeleteBrick(brickEntityProxy.Id);
         }
 
         private async void DropBrickIntoBlackHole(BrickEntityProxy brickEntityProxy)
@@ -214,19 +214,56 @@ namespace Project.Scripts.Game.Gameplay.Service
             brickViewModel.PlayAnimationOfFallingIntoBlackHole(new Vector3(brickViewModel.Position.CurrentValue.x, -10, 0)); //TODO - надо получать это значение?
             await WaitForTheAnimationPlay(brickViewModel);
 
-            RemoveBrickViewModel(brickEntityProxy);
+            DeleteBrick(brickEntityProxy.Id);
         }
 
-        private void LowerAllBrick(List<BrickEntityProxy> bricks)
+        private async void LowerAllBrick(List<BrickEntityProxy> bricks)
         {
             var SortedBricksByHeight = bricks.OrderBy(brick => brick.Position.CurrentValue.y).ToList();
+            Dictionary<Vector3, BrickEntityProxy> bricksAndNewPosition = new();
 
+            //for (var i = 1; i < SortedBricksByHeight.Count; i++)
+            //{
 
-            for (var i = 1; i < SortedBricksByHeight.Count; i++)
+            //    Vector3 newposition = new Vector3(SortedBricksByHeight[i].Position.Value.x,
+            //        SortedBricksByHeight[i - 1].Position.Value.y + SortedBricksByHeight[i - 1].Scale.y);
+
+            //    bricksAndNewPosition[newposition] = SortedBricksByHeight[i];
+            //}
+            Vector3 lastPosition = Vector3.zero;
+
+            for (var i = 0; i < SortedBricksByHeight.Count; i++)
             {
-                SortedBricksByHeight[i].Position.Value = new Vector3(SortedBricksByHeight[i].Position.Value.x,
-                    SortedBricksByHeight[i - 1].Position.Value.y + SortedBricksByHeight[i - 1].Scale.y);
+                // Если это не первый элемент, обновляем позицию
+                if (i > 0)
+                {
+                    lastPosition.y += SortedBricksByHeight[i - 1].Scale.y; // Обновляем Y координату на основе высоты предыдущего блока
+                }
+                else
+                {
+                    lastPosition = SortedBricksByHeight[i].Position.Value; // Для первого элемента просто берем его текущую позицию
+                }
 
+                Vector3 newposition = new Vector3(SortedBricksByHeight[i].Position.Value.x, lastPosition.y);
+
+                bricksAndNewPosition[newposition] = SortedBricksByHeight[i];
+            }
+
+            List<Task> animationTasks = new();
+
+            foreach (var keyAndValue in bricksAndNewPosition)
+            {
+                var brickViewModel = _bricksMap.Values.First(brick => brick.BrickEntityId == keyAndValue.Value.Id);
+                brickViewModel.PlayAnimationOfMovingDown(keyAndValue.Key);
+
+                animationTasks.Add(WaitForTheAnimationPlay(brickViewModel));
+            }
+
+            await Task.WhenAll(animationTasks);
+
+            foreach (var keyAndValue in bricksAndNewPosition)
+            {
+                keyAndValue.Value.Position.Value = keyAndValue.Key;
             }
 
             _gameStateProvider.SaveGameState();

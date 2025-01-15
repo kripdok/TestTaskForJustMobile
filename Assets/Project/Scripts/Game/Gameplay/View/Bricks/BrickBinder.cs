@@ -15,12 +15,14 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
         [SerializeField] private Rigidbody2D _body2D;
         [SerializeField] private int _concealingOrder;
 
+        private bool _isInteractable;
         private BrickViewModel _viewModel;
         private Tween _tween;
         private float _animationDuration = 0.5f;
 
         public void Bind(BrickViewModel viewModel)
         {
+            _isInteractable = true;
             _viewModel = viewModel;
             _sprite.color = viewModel.Color;
             transform.localScale = viewModel.Scale;
@@ -38,11 +40,16 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
 
         public void StartHold()
         {
-            _viewModel.RequestStartHold();
+            if (_isInteractable)
+            {
+                _viewModel.RequestStartHold();
+            }
         }
 
         private void PlayAninmation(string animationNam)
         {
+            _isInteractable = false;
+
             switch (animationNam)
             {
                 case BrickAnimationNameConstants.DIE:
@@ -55,6 +62,8 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
 
         private void PlayAnimationWithPosition(string animationNam, Vector3 position)
         {
+            _isInteractable = false;
+
             switch (animationNam)
             {
                 case BrickAnimationNameConstants.MOVE_TO_TOP_POSITION:
@@ -62,6 +71,9 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
                     break;
                 case BrickAnimationNameConstants.FALL_INTO_A_BLACK_HOLE:
                     PlayAnimationOfFallingIntoBlackHole(position);
+                    break;
+                case BrickAnimationNameConstants.MOVE_TO_DOWN:
+                    PlayAnimationOfMovingDown(position);
                     break;
                 default:
                     throw new ArgumentException($"Animation for Brick with name {animationNam} is not registered");
@@ -74,7 +86,7 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
 
             _tween = sequence.Append(transform.DOScale(0, _animationDuration))
                 .Insert(0, transform.DORotate(new Vector3(0, 0, 360), _animationDuration, RotateMode.FastBeyond360))
-                .AppendCallback(() => _viewModel.ChangeTestBool());
+                .AppendCallback(() => ChangeViewState());
         }
 
         private void PlayMoveToTopPositionAnimation(Vector3 position)
@@ -86,7 +98,7 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
             _tween = sequence.Append(transform.DOMoveY(topYPosition, _animationDuration))
                 .Insert(0, transform.DORotate(new Vector3(0, 0, 360), _animationDuration, RotateMode.FastBeyond360))
                 .Insert(_animationDuration, transform.DOMove(position, _animationDuration))
-                .AppendCallback(() => _viewModel.ChangeTestBool());
+                .AppendCallback(() => ChangeViewState());
         }
 
         private void PlayAnimationOfFallingIntoBlackHole(Vector3 position)
@@ -96,7 +108,21 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
 
             _tween = sequence.Append(transform.DORotate(new Vector3(0, 0, 360), _animationDuration, RotateMode.FastBeyond360))
                 .Insert(0, transform.DOMove(position, _animationDuration))
-                .AppendCallback(() => _viewModel.ChangeTestBool());
+                .AppendCallback(() => ChangeViewState());
+        }
+
+        private void PlayAnimationOfMovingDown(Vector3 position)
+        {
+            var sequence = DOTween.Sequence();
+
+            _tween = sequence.Append(transform.DOMove(position, _animationDuration / 2))
+                .AppendCallback(() => ChangeViewState());
+        }
+
+        private void ChangeViewState()
+        {
+            _isInteractable = true;
+            _viewModel.ChangeAnimationState();
         }
     }
 }

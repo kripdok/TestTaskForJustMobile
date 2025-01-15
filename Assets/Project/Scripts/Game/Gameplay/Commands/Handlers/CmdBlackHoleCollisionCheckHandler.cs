@@ -30,10 +30,12 @@ namespace Project.Scripts.Game.Gameplay.Commands.Handlers
             {
                 if (hit.collider.GetComponent<BlackHole>() != null)
                 {
+                    Debug.Log("Блок упал в дыру!");
                     return Task.FromResult(true);
                 }
             }
 
+            Debug.Log("Блок не был сброшен в дыру. Он находился не над ней!");
             return Task.FromResult(false);
         }
     }

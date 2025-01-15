@@ -57,7 +57,13 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
             PlayAnimationWithPosition?.Invoke(BrickAnimationNameConstants.FALL_INTO_A_BLACK_HOLE, position);
         }
 
-        public void ChangeTestBool()
+        public void PlayAnimationOfMovingDown(Vector3 position)
+        {
+            IsAnimationPlayed = false;
+            PlayAnimationWithPosition?.Invoke(BrickAnimationNameConstants.MOVE_TO_DOWN, position);
+        }
+
+        public void ChangeAnimationState()
         {
             IsAnimationPlayed = true;
         }

@@ -7,14 +7,15 @@ namespace Project.Scripts.Game.Gameplay.Commands.Handlers
 {
     public class CmdColliderIntersectionCheckHandler : ICommandHandler<CmdColliderIntersectionCheck>
     {
-        
+
         public Task<bool> Handle(CmdColliderIntersectionCheck command)
         {
             var colliders = new List<Collider2D>();
             var overlapCount = command.Collider.OverlapCollider(new ContactFilter2D(), colliders);
 
-            if(overlapCount > 0)
+            if (overlapCount > 0)
             {
+                Debug.Log("Блок касается других блоков!");
                 return Task.FromResult(false);
             }
 

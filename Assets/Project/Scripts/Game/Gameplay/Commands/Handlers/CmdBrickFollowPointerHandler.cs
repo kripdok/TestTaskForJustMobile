@@ -33,6 +33,23 @@ namespace Project.Scripts.Game.Gameplay.Commands.Handlers
             float maxY = _cameraSystem.GetMaxYPosition();
             float halfScaleX = command.BrickEntityProxy.Scale.x / 2;
 
+#if UNITY_EDITOR
+            if (brickPosition.y > maxY)
+            {
+                Debug.Log("Блок находится слишком высоко!");
+            }
+
+            if (brickPosition.x > maxX)
+            {
+                Debug.Log("Блок находится за границей правой стороны экрана!");
+            }
+
+            if (isPointingToUI)
+            {
+                Debug.Log("Блок касается UI");
+            }
+
+#endif
             if (isPointingToUI ||
                 brickPosition.x < cameraX + halfScaleX ||
                 brickPosition.y > maxY ||

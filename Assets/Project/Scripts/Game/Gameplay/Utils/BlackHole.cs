@@ -2,7 +2,8 @@
 
 namespace Project.Scripts.Game.Gameplay.Utils
 {
-    public class BlackHole:MonoBehaviour
+    public class BlackHole : MonoBehaviour
     {
+
     }
 }

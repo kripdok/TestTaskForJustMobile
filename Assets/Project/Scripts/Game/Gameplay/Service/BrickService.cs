@@ -27,10 +27,6 @@ namespace Project.Scripts.Game.Gameplay.Service
         [Inject]
         public BrickService(IGameStateProvider gameStateProvider, ICommandProcessor cmd, WorldGameplayRootBinder worldRootBinder)
         {
-
-
-           // _gameStateProvider.SaveGameState(); TODO - надо придумать когда сохранять игру
-
             _cmd = cmd;
             _worldRootBinder = worldRootBinder;
             _gameStateProvider = gameStateProvider;
@@ -104,10 +100,8 @@ namespace Project.Scripts.Game.Gameplay.Service
             {
                 vieModel.OnStartHold.Dispose();
                 _allBricks.Remove(vieModel);
+                Debug.Log("Блок уничтожен");
             }
-
-            
-            Debug.Log("Блок уничтожен");
         }
 
         private async void TryPuttingBrickOnTopOfTheTower(BrickEntityProxy brickEntityProxy)
@@ -159,8 +153,8 @@ namespace Project.Scripts.Game.Gameplay.Service
             var brickEntityProxy = SortedBricksByHeight.FirstOrDefault(b => b.Id == brickEntityId);
 
             var oldPosition = brickEntityProxy.Position.Value;
-
             await MoveBrick(brickEntityProxy);
+
             var isBlackHoleCollisionCheked = _cmd.Process(
                 new CmdBlackHoleCollisionCheck(_worldRootBinder.GetBrickBinderCollider(brickEntityProxy.Id)));
 

@@ -99,9 +99,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 293856ba6f5c4774186220a0137ea90b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Collider>k__BackingField: {fileID: 4278319225863579544}
   _sprite: {fileID: 8784784383254318077}
   _body2D: {fileID: 1604803640384476096}
-  <Collider>k__BackingField: {fileID: 4278319225863579544}
+  _concealingOrder: -2
 --- !u!61 &4278319225863579544
 BoxCollider2D:
   m_ObjectHideFlags: 0

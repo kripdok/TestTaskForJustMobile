@@ -9,9 +9,11 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
 {
     public class BrickBinder : MonoBehaviour, IRespondOnHold
     {
+        [field: SerializeField] public Collider2D Collider { get; private set; }
+
         [SerializeField] private SpriteRenderer _sprite;
         [SerializeField] private Rigidbody2D _body2D;
-        [field: SerializeField] public Collider2D Collider { get; private set; }
+        [SerializeField] private int _concealingOrder;
 
         private BrickViewModel _viewModel;
         private Tween _tween;
@@ -89,6 +91,7 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
 
         private void PlayAnimationOfFallingIntoBlackHole(Vector3 position)
         {
+            _sprite.sortingOrder = _concealingOrder;
             var sequence = DOTween.Sequence();
 
             _tween = sequence.Append(transform.DORotate(new Vector3(0, 0, 360), _animationDuration, RotateMode.FastBeyond360))

@@ -367,6 +367,7 @@ MonoBehaviour:
   _loadingScreen: {fileID: 5897450671030684624}
   _uiSceneContainer: {fileID: 6314686849178724891}
   _canvas: {fileID: 3487595555324248636}
+  _maxSotingOrder: 200
 --- !u!1001 &632641352067374711
 PrefabInstance:
   m_ObjectHideFlags: 0

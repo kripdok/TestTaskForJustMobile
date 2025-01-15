@@ -7,7 +7,7 @@ namespace Project.Scripts.Game.GameRoot
         [SerializeField] private GameObject _loadingScreen;
         [SerializeField] private Transform _uiSceneContainer;
         [SerializeField] private Canvas _canvas;
-        [SerializeField, Range(0,500)] private int _maxSotingOrder;
+        [SerializeField, Range(0, 500)] private int _maxSotingOrder;
 
         private int _defaultOrderByLevel;
 
@@ -15,7 +15,7 @@ namespace Project.Scripts.Game.GameRoot
         {
             HideLoadingScreen();
             _defaultOrderByLevel = _canvas.sortingOrder;
-           
+
         }
 
         public void SetDefaultSoringOrder()

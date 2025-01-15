@@ -11,7 +11,6 @@ namespace Project.Scripts.Game.Gameplay.View.UI.Brick
 
         private readonly string _typeId;
 
-
         public UIBrickViewModel(BrickInitialStateSettings brickSettings)
         {
             Color = brickSettings.Color;

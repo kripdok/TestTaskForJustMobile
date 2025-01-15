@@ -2,7 +2,6 @@
 using Project.Scripts.Game.State.Bricks;
 using R3;
 using System.Linq;
-using Zenject;
 
 namespace Project.Scripts.Game.State.Root
 {
@@ -26,10 +25,10 @@ namespace Project.Scripts.Game.State.Root
             Bricks.ObserveRemove().Subscribe(e =>
             {
                 var removeBrick = e.Value;
-                var removeBrickState = _gameState.Bricks.FirstOrDefault(b=> b.Id == removeBrick.Id);
+                var removeBrickState = _gameState.Bricks.FirstOrDefault(b => b.Id == removeBrick.Id);
                 _gameState.Bricks.Remove(removeBrickState);
             });
-            //TODO - Сделать инициализацию данных для игры
+
         }
 
         public int CreateEntityId() => _gameState.CreateEntityId();

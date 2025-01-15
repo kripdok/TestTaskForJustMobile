@@ -1,9 +1,9 @@
 ﻿using ObservableCollections;
 using Project.Scripts.Game.Gameplay.View.UI.Brick;
 using Project.Scripts.MVVM.UI;
+using R3;
 using UnityEngine;
 using UnityEngine.UI;
-using R3;
 
 namespace Project.Scripts.Game.Gameplay.View.UI.ScreenGameplay
 {
@@ -16,14 +16,14 @@ namespace Project.Scripts.Game.Gameplay.View.UI.ScreenGameplay
         protected override void OnBind(ScreenGameplayViewModel viewModel)
         {
             base.OnBind(viewModel);
-            foreach(var uiBrick in viewModel.AllUIBricks)
+            foreach (var uiBrick in viewModel.AllUIBricks)
             {
                 SetParent(uiBrick);
             }
 
-            viewModel.AllUIBricks.ObserveAdd().Subscribe(e => 
+            viewModel.AllUIBricks.ObserveAdd().Subscribe(e =>
             {
-                SetParent(e.Value); 
+                SetParent(e.Value);
             });
 
         }
@@ -37,7 +37,7 @@ namespace Project.Scripts.Game.Gameplay.View.UI.ScreenGameplay
         private void OnDisable()
         {
             _buttonBackToMenu?.onClick.RemoveListener(OnPopupAButtonClicked);
-            
+
         }
 
         private void OnPopupAButtonClicked()

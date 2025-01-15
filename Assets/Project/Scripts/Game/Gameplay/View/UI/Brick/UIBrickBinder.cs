@@ -12,6 +12,7 @@ namespace Project.Scripts.Game.Gameplay.View.UI.Brick
         private UIBrickViewModel _viewModel;
         private Tween _tween;
         private float _animationDuration = 0.3f;
+
         public void Bind(UIBrickViewModel viewModel)
         {
             _viewModel = viewModel;

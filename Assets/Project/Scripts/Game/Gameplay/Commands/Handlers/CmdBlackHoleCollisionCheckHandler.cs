@@ -1,6 +1,4 @@
-﻿using Project.Scripts.Game.Gameplay.Commands;
-using Project.Scripts.Game.Gameplay.Utils;
-using Project.Scripts.Game.Gameplay.View.Bricks;
+﻿using Project.Scripts.Game.Gameplay.Utils;
 using Project.Scripts.Game.State.cmd;
 using System.Threading.Tasks;
 using UnityEngine;

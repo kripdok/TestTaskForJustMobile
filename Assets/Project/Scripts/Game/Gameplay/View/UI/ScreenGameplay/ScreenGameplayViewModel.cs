@@ -9,8 +9,10 @@ namespace Project.Scripts.Game.Gameplay.View.UI.ScreenGameplay
 {
     public class ScreenGameplayViewModel : WindowViewModel
     {
-        private readonly GameplayUIManager _uiManager;
         public readonly IObservableCollection<UIBrickBinder> AllUIBricks;
+
+        private readonly GameplayUIManager _uiManager;
+
         public override string Id => "ScreenGameplay";
 
         public ScreenGameplayViewModel(GameplayUIManager uiManager, UIBricksService uIBricksService)

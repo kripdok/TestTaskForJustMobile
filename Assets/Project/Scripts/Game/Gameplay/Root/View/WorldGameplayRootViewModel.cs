@@ -8,13 +8,13 @@ namespace Project.Scripts.Game.Gameplay.Root.View
 {
     public class WorldGameplayRootViewModel
     {
-        public readonly IObservableCollection<BrickViewModel> AllBuildongs;
+        public readonly IObservableCollection<BrickViewModel> AllBricks;
         public readonly BrickBinderObjectPool ObjectPool;
 
         [Inject]
         public WorldGameplayRootViewModel(BrickService brickService, BrickBinderObjectPool objectPool)
         {
-            AllBuildongs = brickService.AllBricks;
+            AllBricks = brickService.AllBricks;
             ObjectPool = objectPool;
         }
     }

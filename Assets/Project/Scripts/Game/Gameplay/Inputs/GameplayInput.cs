@@ -11,15 +11,16 @@ namespace Project.Scripts.Game.Gameplay.Inputs
 {
     public class GameplayInput : IGameplayInput
     {
-        public ReadOnlyReactiveProperty<Vector3> Position => _position;
-        public bool IsEndPointFound => _isEndPointFound;
-        public bool IsPointsToUI => _isPointsToUI;
 
         private readonly ReactiveProperty<Vector3> _position;
         private bool _isEndPointFound;
         private readonly InputControls _controls;
         private readonly Coroutines _coroutines;
         private bool _isPointsToUI;
+
+        public ReadOnlyReactiveProperty<Vector3> Position => _position;
+        public bool IsEndPointFound => _isEndPointFound;
+        public bool IsPointsToUI => _isPointsToUI;
 
         public GameplayInput(Coroutines coroutines, InputControls controls)
         {
@@ -42,6 +43,7 @@ namespace Project.Scripts.Game.Gameplay.Inputs
         {
             _controls.Enable();
         }
+
         private void OnClickStarted()
         {
             _isPointsToUI = false;

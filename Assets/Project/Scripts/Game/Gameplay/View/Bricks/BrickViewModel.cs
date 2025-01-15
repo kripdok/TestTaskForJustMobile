@@ -8,7 +8,6 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
 {
     public class BrickViewModel
     {
-        private readonly BrickEntityProxy _brickEntity;
 
         public readonly int BrickEntityId;
         public readonly string TypeId;
@@ -16,12 +15,13 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
         public readonly Vector3 Scale;
         public readonly Subject<int> OnStartHold = new();
 
-        public ReadOnlyReactiveProperty<Vector3> Position { get; }
+        private readonly BrickEntityProxy _brickEntity;
 
+        public ReadOnlyReactiveProperty<Vector3> Position { get; }
         public bool IsAnimationPlayed { get; private set; }
 
         public event Action<string> PlayAnimation;
-        public event Action<string,Vector3> PlayAnimationWithPosition;
+        public event Action<string, Vector3> PlayAnimationWithPosition;
 
         public BrickViewModel(BrickEntityProxy proxy)
         {

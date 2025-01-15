@@ -19,29 +19,23 @@ namespace Project.Scripts.Game.Gameplay.Root
 
         private GameplayRegistrations _registrations;
         private GameplayViewModelsRegistrations _viewModelRegistrations;
+        private DiContainer _diContainer;
 
         public Observable<GameplayExitParams> Run(GameplayEnterParams enterParams)
         {
-            var container = sceneContext.Container;
-            _registrations = new GameplayRegistrations(container, enterParams, _worldGameplayRoot,_cameraSystem);
-            _viewModelRegistrations = new GameplayViewModelsRegistrations(container);
-            container.Resolve<UIRootView>().SetCamera(_cameraSystem.Camera);
+            _diContainer = sceneContext.Container;
 
-            InitUI(container);
-            InitWorld(container);
-
-            var mainMenuEnterParams = new MainMenuEnterParams();
-            var exitParams = new GameplayExitParams(mainMenuEnterParams);
-            var exitSceneRequest = container.ResolveId<Subject<Unit>>(AppConstants.ENIT_SCENE_REQUEST_TAG);
-            var exitToMainMenuSceneSignal = exitSceneRequest.Select(_ => exitParams);
-            Debug.Log($"GAMEPLAY ENTER PARAMS: Run gameplay scene.");
-
-            return exitToMainMenuSceneSignal;
+            RegisterSystems(_diContainer, enterParams);
+            InitUI(_diContainer);
+            InitWorld(_diContainer);
+            return CreateExitSignal();
         }
 
-        private void InitWorld(DiContainer container)
+        private void RegisterSystems(DiContainer container, GameplayEnterParams enterParams)
         {
-            _worldGameplayRoot.Bind(container.Resolve<WorldGameplayRootViewModel>());
+            _registrations = new GameplayRegistrations(container, enterParams, _worldGameplayRoot, _cameraSystem);
+            _viewModelRegistrations = new GameplayViewModelsRegistrations(container);
+            container.Resolve<UIRootView>().SetCamera(_cameraSystem.Camera);
         }
 
         private void InitUI(DiContainer container)
@@ -55,6 +49,22 @@ namespace Project.Scripts.Game.Gameplay.Root
 
             var uiManager = container.Resolve<GameplayUIManager>();
             uiManager.OpenScreenGameplay();
+        }
+
+        private void InitWorld(DiContainer container)
+        {
+            _worldGameplayRoot.Bind(container.Resolve<WorldGameplayRootViewModel>());
+        }
+
+        private Observable<GameplayExitParams> CreateExitSignal()
+        {
+            var mainMenuEnterParams = new MainMenuEnterParams();
+            var exitParams = new GameplayExitParams(mainMenuEnterParams);
+            var exitSceneRequest = _diContainer.ResolveId<Subject<Unit>>(AppConstants.ENIT_SCENE_REQUEST_TAG);
+            var exitToMainMenuSceneSignal = exitSceneRequest.Select(_ => exitParams);
+            Debug.Log($"GAMEPLAY ENTER PARAMS: Run gameplay scene.");
+
+            return exitToMainMenuSceneSignal;
         }
     }
 }

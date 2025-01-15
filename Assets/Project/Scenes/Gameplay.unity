@@ -211,7 +211,7 @@ GameObject:
   - component: {fileID: 176541854}
   - component: {fileID: 176541855}
   m_Layer: 0
-  m_Name: "\u041E\u0431\u043E\u04382 \u0441 \u0441\u044E\u0440\u043F\u0440\u0438\u0437\u043E\u043C"
+  m_Name: Background_2_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -445,7 +445,7 @@ GameObject:
   - component: {fileID: 1486892169}
   - component: {fileID: 1486892168}
   m_Layer: 0
-  m_Name: "\u0427\u0435\u0440\u043D\u0430\u044F \u0434\u044B\u0440\u0430"
+  m_Name: BalckHole
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -506,7 +506,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -2
+  m_SortingOrder: -3
   m_Sprite: {fileID: 21300000, guid: b343a383dfe28f146aeb78d23f0ca913, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -695,7 +695,7 @@ GameObject:
   - component: {fileID: 1616365387}
   - component: {fileID: 1616365388}
   m_Layer: 0
-  m_Name: "\u041E\u0431\u043E\u04381"
+  m_Name: Bacground_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -874,7 +874,7 @@ GameObject:
   - component: {fileID: 2129136647}
   - component: {fileID: 2129136648}
   m_Layer: 0
-  m_Name: "\u041E\u0431\u043E\u04382"
+  m_Name: Background_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

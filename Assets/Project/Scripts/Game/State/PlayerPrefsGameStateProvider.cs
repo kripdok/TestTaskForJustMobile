@@ -65,7 +65,6 @@ namespace Project.Scripts.Game.State
 
         private GameStateProxy CreateGameStateFromSettings()
         {
-            //Default State
             _gameStateOrigin = new GameState
             {
                 Bricks = new List<BrickEntity>()

@@ -30,7 +30,7 @@ namespace Project.Scripts.Game.Gameplay.Commands.Handlers
             return Task.FromResult(isCheck);
         }
 
-        private bool CheckColliders( Vector2 origin)
+        private bool CheckColliders(Vector2 origin)
         {
 
             Vector2 direction = Vector2.down;
@@ -47,6 +47,6 @@ namespace Project.Scripts.Game.Gameplay.Commands.Handlers
 
             return false;
         }
-        
+
     }
 }

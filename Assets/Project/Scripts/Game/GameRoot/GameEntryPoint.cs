@@ -14,12 +14,12 @@ namespace Project.Scripts.Game.GameRoot
 {
     public class GameEntryPoint
     {
-        private static GameEntryPoint _instance;
-        private readonly DiContainer _rootContainer;
-
         private Coroutines _coroutines;
-        private ProjectContext _projectContext;
         private UIRootView _uiRoot;
+
+        private static GameEntryPoint _instance;
+
+        private readonly DiContainer _rootContainer;
 
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -34,24 +34,34 @@ namespace Project.Scripts.Game.GameRoot
 
         private GameEntryPoint()
         {
+            _rootContainer = ProjectContext.Instance.Container;
+
+            CreateCoroutines();
+            CreateUIRootView();
+            BindSystems();
+            RunGame();
+        }
+
+        private void CreateCoroutines()
+        {
             _coroutines = new GameObject(name: "[COROUTINES]").AddComponent<Coroutines>();
             Object.DontDestroyOnLoad(_coroutines.gameObject);
+        }
 
+        private void CreateUIRootView()
+        {
             var prefabUIRoot = Resources.Load<UIRootView>("UIRoot");
             _uiRoot = Object.Instantiate(prefabUIRoot, null);
             Object.DontDestroyOnLoad(_uiRoot.gameObject);
+        }
 
-            _projectContext = ProjectContext.Instance;
-            _rootContainer = _projectContext.Container;
+        private void BindSystems()
+        {
 
-
-            //TODO - Надо разобраться по поводу различия разного биндинга и их настроек
             _rootContainer.Bind<Coroutines>().FromInstance(_coroutines).AsSingle();
             _rootContainer.Bind<ISettingsProvider>().To<LocalSettingsProvider>().AsSingle().NonLazy();
             _rootContainer.Bind<IGameStateProvider>().To<PlayerPrefsGameStateProvider>().AsSingle().NonLazy();
             _rootContainer.Bind<UIRootView>().FromInstance(_uiRoot).AsSingle();
-
-            RunGame();
         }
 
 
@@ -138,5 +148,3 @@ namespace Project.Scripts.Game.GameRoot
         }
     }
 }
-
-

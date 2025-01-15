@@ -1,5 +1,4 @@
 ﻿using Project.Scripts.Game.Common;
-using Project.Scripts.Game.Gameplay.View.UI;
 using Project.Scripts.Game.MainMenu.View.UI;
 using Project.Scripts.Game.MainMenu.View.UI.ScreenMainMenu;
 using Project.Scripts.MVVM.UI;

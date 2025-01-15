@@ -6,6 +6,7 @@ using Project.Scripts.Utils;
 using R3;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 using UnityEngine.SceneManagement;
 using Zenject;
 
@@ -56,6 +57,7 @@ namespace Project.Scripts.Game.GameRoot
 
         private async void RunGame()
         {
+            await LocalizationSettings.InitializationOperation.Task;
             await _rootContainer.Resolve<ISettingsProvider>().LoadGameSettings();
 
 #if UNITY_EDITOR
@@ -113,7 +115,7 @@ namespace Project.Scripts.Game.GameRoot
             yield return LoadScene(Scenes.BOOT);
             yield return new WaitForSeconds(1);
             yield return LoadScene(Scenes.MAIN_MENU);
-           
+
 
             var sceneEntryPoint = Object.FindFirstObjectByType<MainMenuEntryPoint>();
 

@@ -50,6 +50,7 @@ namespace Project.Scripts.Game.State
         {
             var json = JsonUtility.ToJson(_gameStateOrigin, true);
             PlayerPrefs.SetString(GAME_STATE_KEY, json);
+            Debug.Log("Игра сохранена");
             return Observable.Return(true);
         }
 

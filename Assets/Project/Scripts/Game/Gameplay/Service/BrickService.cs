@@ -81,6 +81,7 @@ namespace Project.Scripts.Game.Gameplay.Service
             return false;
         }
 
+       
         private void CreateBrickViewModel(BrickEntityProxy brickEntityProxy)
         {
             var brickViewModel = new BrickViewModel(brickEntityProxy);
@@ -101,6 +102,7 @@ namespace Project.Scripts.Game.Gameplay.Service
                 vieModel.OnStartHold.Dispose();
                 _allBricks.Remove(vieModel);
                 Debug.Log("Блок уничтожен");
+                _gameStateProvider.SaveGameState();
             }
         }
 
@@ -117,7 +119,7 @@ namespace Project.Scripts.Game.Gameplay.Service
                 if (_allBricks.Count > 1)
                 {
                     await WaitForBlockRemoveAnimation(brickEntityProxy);
-
+                    _gameStateProvider.SaveGameState();
                     return;
                 }
             }
@@ -134,7 +136,10 @@ namespace Project.Scripts.Game.Gameplay.Service
 
                 await WaitForTheAnimationPlay(brickViewModel);
                 brickEntityProxy.Position.Value = newPosition;
+                _gameStateProvider.SaveGameState();
             }
+
+            _gameStateProvider.SaveGameState();
         }
 
         private Vector3 GetNewPositionForBrick(BrickEntityProxy brickThatIsPlaced, Vector3 topBrickPosition, Vector3 topBrickScale)
@@ -179,6 +184,10 @@ namespace Project.Scripts.Game.Gameplay.Service
 
                     LowerAllBrick(LoweredBricks);
                 }
+                else
+                {
+                    _gameStateProvider.SaveGameState();
+                }
             }
             else
             {
@@ -219,6 +228,8 @@ namespace Project.Scripts.Game.Gameplay.Service
                     SortedBricksByHeight[i - 1].Position.Value.y + SortedBricksByHeight[i - 1].Scale.y);
 
             }
+
+            _gameStateProvider.SaveGameState();
         }
 
         private async Task WaitForTheAnimationPlay(BrickViewModel brickViewModel)

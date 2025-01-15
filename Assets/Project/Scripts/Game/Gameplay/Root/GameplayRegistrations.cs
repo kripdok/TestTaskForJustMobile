@@ -2,14 +2,17 @@
 using Project.Scripts.Game.Gameplay.Commands;
 using Project.Scripts.Game.Gameplay.Commands.Handlers;
 using Project.Scripts.Game.Gameplay.Inputs;
+using Project.Scripts.Game.Gameplay.ObjectPools;
 using Project.Scripts.Game.Gameplay.Root.View;
 using Project.Scripts.Game.Gameplay.Service;
 using Project.Scripts.Game.Gameplay.Utils;
+using Project.Scripts.Game.Gameplay.View.Bricks;
 using Project.Scripts.Game.Settings;
 using Project.Scripts.Game.State;
 using Project.Scripts.Game.State.cmd;
 using Project.Scripts.Utils;
 using R3;
+using UnityEngine;
 using Zenject;
 
 namespace Project.Scripts.Game.Gameplay.Root
@@ -40,6 +43,10 @@ namespace Project.Scripts.Game.Gameplay.Root
             diContainer.Bind<Subject<Unit>>().WithId(AppConstants.ENIT_SCENE_REQUEST_TAG).AsCached();
             diContainer.Bind<WorldGameplayRootBinder>().FromInstance(worldRootBinder).AsCached();
 
+
+            var prefabBrickPath = $"Prefabs/Gameplay/Bricks/Brick";
+            var brickPrefab = Resources.Load<BrickBinder>(prefabBrickPath);
+            diContainer.BindMemoryPool<BrickBinder,BrickBinderObjectPool>().FromComponentInNewPrefab(brickPrefab).UnderTransformGroup("Bricks");
         }
     }
 }

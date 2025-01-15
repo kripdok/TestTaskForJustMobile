@@ -4,6 +4,7 @@ using R3;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Profiling.HierarchyFrameDataView;
 
 namespace Project.Scripts.Game.Gameplay.Root.View
 {
@@ -45,11 +46,7 @@ namespace Project.Scripts.Game.Gameplay.Root.View
 
         private void CreateBuilding(BrickViewModel buildingViewModel)
         {
-            var brickType = buildingViewModel.TypeId;
-            var prefabBrickPath = $"Prefabs/Gameplay/Bricks/Brick";
-            var brickPrefab = Resources.Load<BrickBinder>(prefabBrickPath);
-
-            var createBrick = Instantiate(brickPrefab);
+            var createBrick =_viewModel.ObjectPool.Spawn(buildingViewModel);
             createBrick.Bind(buildingViewModel);
             _createdBuildingsMap[buildingViewModel.BrickEntityId] = createBrick;
 
@@ -59,7 +56,7 @@ namespace Project.Scripts.Game.Gameplay.Root.View
         {
             if(_createdBuildingsMap.TryGetValue(buildingViewModel.BrickEntityId, out var briclBinder))
             {
-                Destroy(briclBinder.gameObject);
+                _viewModel.ObjectPool.Despawn(briclBinder);
                 _createdBuildingsMap.Remove(buildingViewModel.BrickEntityId);
             }
         }

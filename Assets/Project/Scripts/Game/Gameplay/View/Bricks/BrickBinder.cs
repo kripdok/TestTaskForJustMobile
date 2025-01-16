@@ -19,6 +19,12 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
         private BrickViewModel _viewModel;
         private Tween _tween;
         private float _animationDuration = 0.5f;
+        private int _defaultOrder;
+
+        private void Awake()
+        {
+            _defaultOrder = _sprite.sortingOrder;
+        }
 
         public void Bind(BrickViewModel viewModel)
         {
@@ -26,16 +32,23 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
             _viewModel = viewModel;
             _sprite.color = viewModel.Color;
             transform.localScale = viewModel.Scale;
+            _sprite.sortingOrder = _defaultOrder;
             _viewModel.Position.Subscribe(e => transform.position = e);
             _viewModel.PlayAnimation += PlayAninmation;
             _viewModel.PlayAnimationWithPosition += PlayAnimationWithPosition;
         }
 
+        private void OnDisable()
+        {
+            TryUnsubscibeFromViewModelAction();
+            _viewModel = null;
+        }
+
         private void OnDestroy()
         {
             _tween?.Kill();
-            _viewModel.PlayAnimation -= PlayAninmation;
-            _viewModel.PlayAnimationWithPosition -= PlayAnimationWithPosition;
+
+            TryUnsubscibeFromViewModelAction();
         }
 
         public void StartHold()
@@ -44,6 +57,15 @@ namespace Project.Scripts.Game.Gameplay.View.Bricks
             {
                 _viewModel.RequestStartHold();
             }
+        }
+
+        private void TryUnsubscibeFromViewModelAction()
+        {
+            if (_viewModel == null)
+                return;
+
+            _viewModel.PlayAnimation -= PlayAninmation;
+            _viewModel.PlayAnimationWithPosition -= PlayAnimationWithPosition;
         }
 
         private void PlayAninmation(string animationNam)
